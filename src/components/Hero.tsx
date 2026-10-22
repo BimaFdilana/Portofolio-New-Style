@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../lib/store'
-import { owner } from '../data/content'
+import { useContent } from '../lib/content'
 import { DialogBox, Hearts } from './ui'
 
 export function Hero() {
   const { t, lang } = useApp()
+  const { owner } = useContent()
   return (
     <section className="max-w-6xl mx-auto px-3 sm:px-4 pt-8 sm:pt-10 pb-4 grid md:grid-cols-[1.15fr_.85fr] gap-8 items-start">
       <div className="anim-fade-up">

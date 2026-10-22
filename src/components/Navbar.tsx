@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
-import { owner } from '../data/content'
+import { useContent } from '../lib/content'
 
 const LINKS = [
   { to: '/', hash: '', key: 'nav.home' },
@@ -20,6 +20,7 @@ export function goSection(navigate: (p: string) => void, pathname: string, hash:
 
 export function Navbar() {
   const { t, lang, setLang, dark, toggleDark, muted, toggleMuted, bgmOn, toggleBgm } = useApp()
+  const { owner } = useContent()
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -91,6 +92,7 @@ export function Navbar() {
 /** Tombol melayang: Spirit Guide (kontak cepat) + jalan pintas game. */
 export function FloatingButtons() {
   const { t } = useApp()
+  const { owner } = useContent()
   const [guide, setGuide] = useState(false)
   const { pathname } = useLocation()
   if (pathname === '/game') return null

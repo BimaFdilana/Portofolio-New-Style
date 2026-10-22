@@ -2,17 +2,18 @@ import { useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
-import { certificates, journey, owner, projects, skillCategories } from '../data/content'
+import { useContent } from '../lib/content'
 import { DialogBox, SectionTitle, Stars, spawnConfetti } from './ui'
 
 /* ---------------- INVENTORY (SKILLS) ---------------- */
 export function Inventory() {
   const { t, lang } = useApp()
+  const { skills } = useContent()
   return (
     <section id="skills" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
       <SectionTitle icon="🎒" a={t('skills.title.a')} b={t('skills.title.b')} />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {skillCategories.map((cat, ci) => (
+        {skills.map((cat, ci) => (
           <div key={ci} className="card-pixel p-4">
             <p className="font-pixel text-[10px] leading-relaxed">{cat.icon} {cat.title[lang]}</p>
             <div className="mt-3 space-y-2">
@@ -34,6 +35,7 @@ export function Inventory() {
 const PER_PAGE = 9
 export function Dungeons() {
   const { t, lang } = useApp()
+  const { projects } = useContent()
   const [page, setPage] = useState(1)
   const pages = Math.max(1, Math.ceil(projects.length / PER_PAGE))
   const shown = useMemo(() => projects.slice((page - 1) * PER_PAGE, page * PER_PAGE), [page])
@@ -77,6 +79,7 @@ export function Dungeons() {
 /* ---------------- HALL OF RELICS (CERTIFICATES) ---------------- */
 export function Relics() {
   const { t, lang } = useApp()
+  const { certificates } = useContent()
   const [view, setView] = useState<number | null>(null)
   const [page, setPage] = useState(1)
   const cert = view !== null ? certificates[view] : null
@@ -121,6 +124,7 @@ export function Relics() {
 /* ---------------- ADVENTURE LOG (JOURNEY) ---------------- */
 export function AdventureLog() {
   const { t, lang } = useApp()
+  const { journey } = useContent()
   return (
     <section className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
       <SectionTitle icon="📜" a={t('journey.title.a')} b={t('journey.title.b')} />
@@ -143,6 +147,7 @@ export function AdventureLog() {
 /* ---------------- FINAL QUEST (CONTACT) + FOOTER ---------------- */
 export function FinalQuest() {
   const { t } = useApp()
+  const { owner } = useContent()
   const [sent, setSent] = useState<string | null>(null)
   const cards = [
     { icon: '💬', label: 'WhatsApp', note: 'Chat langsung', href: `https://wa.me/${owner.whatsapp}`, cta: t('contact.chat'), bg: '!bg-sage' },
@@ -215,6 +220,7 @@ export function FinalQuest() {
 
 export function Footer() {
   const { t } = useApp()
+  const { owner } = useContent()
   return (
     <footer className="bg-dirtdeep text-parchment border-t-[3px] border-ink mt-6">
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center gap-4 justify-between">

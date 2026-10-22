@@ -1,13 +1,14 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useApp } from '../lib/store'
-import { projects } from '../data/content'
+import { useContent } from '../lib/content'
 import { Footer } from '../components/Sections'
 import { Stars } from '../components/ui'
 
 export function ProjectDetail() {
   const { slug } = useParams()
   const { t, lang } = useApp()
+  const { projects } = useContent()
   const p = projects.find(x => x.slug === slug)
   useEffect(() => { window.scrollTo(0, 0) }, [slug])
 

@@ -16,6 +16,8 @@ npm run build    # produksi -> dist/
 npm run preview  # pratinjau build
 ```
 
+Konten situs bisa diubah lewat **panel admin `/admin`** (Supabase) — lihat `ADMIN.md`.
+
 Deploy: hubungkan repo ini ke **Vercel** (preset Vite) — `vercel.json` sudah berisi
 rewrite SPA + header cache/keamanan. Atau hosting statis apa pun dari folder `dist/`.
 
@@ -50,6 +52,7 @@ public/assets/        <- bg-sky.webp (background pixel, 17 KB), og-image.jpg, CV
 - [ ] Ganti screenshot proyek (sekarang blok placeholder berlabel) & foto/avatar Hero
 - [ ] Ganti CV dummy (`public/assets/cv-bima-fadi-lana.pdf`) dengan CV final
 - [ ] Form kontak: v1 memakai `mailto:` — sambungkan EmailJS/Formspree bila ingin kirim tanpa klien email
-- [ ] Panel admin (sesuai PRD fase berikutnya) & domain final (ubah canonical/OG di `index.html`)
+- [x] Panel admin CRUD konten di `/admin` (Supabase) — setup sekali oleh pemilik, lihat `ADMIN.md`
+- [ ] Domain final (ubah canonical/OG di `index.html`)
 
 Semua aset & nama di tema ini orisinal/generik — tanpa aset Nintendo.

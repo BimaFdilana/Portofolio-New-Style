@@ -1,6 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { AppProvider, useApp } from './lib/store'
+import { ContentProvider } from './lib/content'
 import { sfx, startBgm } from './lib/audio'
 import { LoadingScreen, StartScreen } from './components/Boot'
 import { FloatingButtons, Navbar } from './components/Navbar'
@@ -9,6 +10,7 @@ import { Home } from './pages/Home'
 import { ProjectDetail } from './pages/ProjectDetail'
 
 const MiniDungeon = lazy(() => import('./pages/MiniDungeon').then(m => ({ default: m.MiniDungeon })))
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 type BootPhase = 'start' | 'loading' | 'site'
 
@@ -85,10 +87,23 @@ function Site() {
   )
 }
 
+function Root() {
+  return (
+    <Suspense fallback={<div className="p-16 text-center font-pixel text-xs">LOADING…</div>}>
+      <Routes>
+        <Route path="/admin/*" element={<AdminApp />} />
+        <Route path="*" element={<Site />} />
+      </Routes>
+    </Suspense>
+  )
+}
+
 export default function App() {
   return (
     <AppProvider>
-      <Site />
+      <ContentProvider>
+        <Root />
+      </ContentProvider>
     </AppProvider>
   )
 }
