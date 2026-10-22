@@ -1,59 +1,150 @@
-# Portofolio New Style — Portofolio Bima Fadi Lana (Tema Adventure RPG)
+# 🗡️ Portofolio New Style — Portofolio Bima Fadi Lana
 
-Portofolio personal bertema game adventure RPG generik (aman lisensi, "ala Zelda"):
-pemilik = Hero, proyek = Dungeons, skill = Inventory, sertifikat = Hall of Relics,
-kontak = Final Quest. Dibangun mengikuti **PRD v1.4** & **mockup v3** yang disetujui pemilik.
+Website portofolio personal bertema **adventure RPG generik** ("ala Zelda", aman lisensi):
+pemilik berperan sebagai **Hero**, proyek adalah **Dungeons**, keahlian adalah
+**Inventory**, sertifikat adalah **Hall of Relics**, dan kontak adalah **Final Quest**.
 
-**Syarat utama:** ringan & cepat (anggaran: muatan awal ≤ 600 KB di luar musik),
-setiap klik menu/tombol berbunyi (SFX WebAudio, 0 KB file), start + loading screen dipertahankan.
+Dibangun berdasarkan **PRD v1.4** dan **mockup v3** yang telah disetujui pemilik.
 
-## Menjalankan
+| Aspek | Detail |
+| --- | --- |
+| **Tema** | Adventure RPG — start screen, loading screen, mini-game |
+| **Frontend** | React 19 + Vite + TypeScript + Tailwind CSS v4 |
+| **Backend konten** | PHP + SQLite (satu file API, tanpa layanan eksternal) |
+| **Panel admin** | `/admin` — CRUD konten, UI sederhana |
+| **Bahasa** | Indonesia (default) & English |
+| **Performa** | JS awal ±100 KB gzip · background 17 KB — ringan & cepat |
+| **Deploy** | Server sendiri (PHP) — lihat `ADMIN.md` |
 
-```bash
-npm install
-npm run dev      # pengembangan
-npm run build    # produksi -> dist/
-npm run preview  # pratinjau build
-```
+---
 
-Konten situs bisa diubah lewat **panel admin `/admin`** (backend PHP + SQLite, folder `server/`) — lihat `ADMIN.md`.
+## 🎨 Mockup (v3 — Disetujui)
 
-Deploy (keputusan pemilik): ke **server sendiri** — upload isi `dist/` + folder `server/`,
-isi `server/config.php`, selesai (panduan: `ADMIN.md`). `vercel.json` tidak dipakai.
+Desain final yang menjadi acuan pembangunan. Background memakai ilustrasi
+*pixel Sky + awan + rumput* sesuai contoh pemilik; semua informasi penting
+selalu berada di kartu/dialog krem agar mudah dibaca.
 
-## Struktur
+📄 **PDF lengkap:** [mockup-portofolio-zelda-v3.pdf](docs/mockup-portofolio-zelda-v3.pdf)
+
+![Cover mockup](docs/mockup/01-cover.jpg)
+
+### 1 — Start Screen "PRESS START"
+
+![Start screen](docs/mockup/02-start-screen.jpg)
+
+### 2 — Loading Screen "Loading the Kingdom…"
+
+![Loading screen](docs/mockup/03-loading.jpg)
+
+### 3 — Beranda / Hero
+
+![Beranda dan hero](docs/mockup/04-beranda-hero.jpg)
+
+### 4 — Inventory (Keahlian)
+
+![Inventory](docs/mockup/05-inventory.jpg)
+
+### 5 — Dungeons (Proyek)
+
+![Dungeons](docs/mockup/06-dungeons.jpg)
+
+### 6 — Hall of Relics & Adventure Log
+
+![Relics dan Adventure Log](docs/mockup/07-relics-adventure-log.jpg)
+
+### 7 — Final Quest (Kontak) & Footer
+
+![Final Quest](docs/mockup/08-final-quest.jpg)
+
+### 8 — Quest Log (Detail Proyek)
+
+![Detail proyek](docs/mockup/09-quest-log-detail.jpg)
+
+### 9 — Mini Dungeon (Mini-Game)
+
+![Mini Dungeon](docs/mockup/10-mini-dungeon.jpg)
+
+### 10 — Mobile & Dark Mode
+
+![Mobile dan dark mode](docs/mockup/11-mobile-dark-mode.jpg)
+
+### 11 — Design System
+
+![Design system](docs/mockup/12-design-system.jpg)
+
+---
+
+## ✨ Fitur
+
+- **Start & loading screen** bergaya game (tampil sekali per sesi)
+- **Setiap klik menu/tombol berbunyi** — SFX 8-bit WebAudio (0 KB file) + musik chiptune (BGM) dengan tombol on/off
+- **Hero & panel karakter** — hati, EXP, kelas, status "Siap Menerima Quest Baru"
+- **Inventory** — 6 kategori keahlian dengan level bar
+- **Dungeons** — grid proyek + halaman detail *Quest Log* (fitur = *Loot*, tantangan = *Boss Battle*)
+- **Hall of Relics** — sertifikat dengan viewer multi-halaman
+- **Adventure Log** — garis waktu perjalanan karier
+- **Final Quest** — kartu kontak + form (modal "QUEST ACCEPTED!")
+- **Mini Dungeon** — mini-game 3 dungeon yang bisa dimainkan (kunci, pintu, peti, musuh patroli; progres tersimpan)
+- **Easter egg** — ketik `coin` di halaman mana pun
+- **Dwibahasa** ID/EN · **Dark mode** · **Responsif** penuh
+- **Panel admin CRUD** untuk semua konten — tanpa perlu menyentuh kode
+
+## 🧱 Teknologi
+
+- **React 19 + Vite + TypeScript** — SPA cepat, route game & admin di-*lazy load*
+- **Tailwind CSS v4** — tema pixel (font Press Start 2P + Nunito)
+- **WebAudio API** — seluruh SFX & BGM disintesis, tanpa file audio
+- **PHP 8 + SQLite (PDO)** — `server/api.php`: konten publik, login admin, CRUD
+- SEO lengkap: meta OG, Twitter Card, JSON-LD Person + WebSite, sitemap-ready
+
+## 📁 Struktur Proyek
 
 ```
 src/
-  data/content.ts     <- SEMUA konten situs (proyek, skill, sertifikat, kontak)
-  lib/audio.ts        <- mesin SFX 8-bit + BGM chiptune (WebAudio, tanpa file)
-server/               <- API PHP + SQLite (api.php) untuk konten & panel admin
-  lib/i18n.ts         <- kamus dwibahasa ID/EN
-  lib/store.tsx       <- state global (bahasa, tema gelap, mute, BGM)
+  data/content.ts     <- konten bawaan (fallback bila API belum terpasang)
+  lib/                <- audio (SFX/BGM), i18n (ID/EN), store, klien konten
   components/         <- Boot (start/loading), Navbar, Hero, Sections, ui
-  pages/              <- Home, ProjectDetail, MiniDungeon (mini-game)
-public/assets/        <- bg-sky.webp (background pixel, 17 KB), og-image.jpg, CV
+  pages/              <- Home, ProjectDetail, MiniDungeon (game)
+  admin/              <- panel admin /admin (UI sederhana) + klien API
+server/
+  api.php             <- API PHP + SQLite (konten, login, CRUD)
+  seed.json           <- data awal (terisi otomatis saat pertama diakses)
+  config.example.php  <- contoh konfigurasi akun admin
+public/assets/        <- bg-sky.webp (17 KB), og-image.jpg, CV
+docs/mockup/          <- gambar mockup v3 (galeri di atas) + PDF
 ```
 
-## Mengedit konten
+## 🚀 Menjalankan Lokal
 
-- **Proyek / skill / sertifikat / perjalanan / kontak:** `src/data/content.ts`
-  (teks dwibahasa `{ id, en }`).
-- **Terjemahan UI:** `src/lib/i18n.ts`.
-- **Background:** ganti `public/assets/bg-sky.webp` (jaga ≤ 60 KB, rasio lebar).
+```bash
+npm install
+npm run dev       # pengembangan (situs tampil dengan data bawaan)
+npm run build     # build produksi -> dist/
+npm run preview   # pratinjau hasil build
+```
 
-## Status & TODO
+Menguji beserta API & panel admin secara lokal — lihat **ADMIN.md**
+(bagian "Menguji di komputer lokal").
+
+## 🔐 Panel Admin
+
+Konten situs (proyek, sertifikat, keahlian, perjalanan, kontak/pengaturan)
+diubah lewat **`/admin`** dengan login email + password. Backend-nya cukup
+PHP + SQLite di server sendiri. Panduan pemasangan & keamanan: **ADMIN.md**.
+
+## 🗺️ Status & TODO
 
 - [x] Start screen + loading screen (sekali per sesi)
-- [x] Hero + panel karakter, Inventory, Dungeons + detail (Quest Log)
-- [x] Hall of Relics (viewer sertifikat), Adventure Log, Final Quest (form + modal)
-- [x] Mini-game Mini Dungeon — 3 dungeon, bisa dimainkan (peta terverifikasi BFS)
-- [x] SFX semua klik, BGM toggle, easter egg ketik `coin`, dwibahasa ID/EN (default ID), dark mode
-- [ ] Ganti **nomor WhatsApp, email, LinkedIn, Instagram** final di `src/data/content.ts` (sekarang placeholder)
-- [ ] Ganti screenshot proyek (sekarang blok placeholder berlabel) & foto/avatar Hero
-- [ ] Ganti CV dummy (`public/assets/cv-bima-fadi-lana.pdf`) dengan CV final
-- [ ] Form kontak: v1 memakai `mailto:` — sambungkan EmailJS/Formspree bila ingin kirim tanpa klien email
-- [x] Panel admin CRUD konten di `/admin` (PHP + SQLite di server sendiri) — lihat `ADMIN.md`
-- [ ] Domain final (ubah canonical/OG di `index.html`)
+- [x] Hero, Inventory, Dungeons + detail, Relics, Adventure Log, Final Quest
+- [x] Mini-game Mini Dungeon — 3 dungeon (peta terverifikasi dapat diselesaikan)
+- [x] SFX semua klik, BGM, easter egg `coin`, dwibahasa, dark mode
+- [x] Panel admin CRUD konten (PHP + SQLite)
+- [ ] Ganti kontak final (WhatsApp, email, LinkedIn, Instagram) — bisa lewat panel admin
+- [ ] Ganti screenshot proyek & foto/avatar Hero (sekarang placeholder berlabel)
+- [ ] Ganti CV dummy dengan CV final
+- [ ] Form kontak: v1 via `mailto:` — opsi kirim langsung (PHP mail) menyusul
+- [ ] Deploy ke server pemilik + domain final (ubah canonical/OG di `index.html`)
 
-Semua aset & nama di tema ini orisinal/generik — tanpa aset Nintendo.
+---
+
+*Semua nama, karakter, dan aset tema di situs ini orisinal/generik — tanpa aset Nintendo.*
