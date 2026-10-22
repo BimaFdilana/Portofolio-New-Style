@@ -132,19 +132,6 @@ Konten situs (proyek, sertifikat, keahlian, perjalanan, kontak/pengaturan)
 diubah lewat **`/admin`** dengan login email + password. Backend-nya cukup
 PHP + SQLite di server sendiri. Panduan pemasangan & keamanan: **ADMIN.md**.
 
-## 🗺️ Status & TODO
-
-- [x] Start screen + loading screen (sekali per sesi)
-- [x] Hero, Inventory, Dungeons + detail, Relics, Adventure Log, Final Quest
-- [x] Mini-game Mini Dungeon — 3 dungeon (peta terverifikasi dapat diselesaikan)
-- [x] SFX semua klik, BGM, easter egg `coin`, dwibahasa, dark mode
-- [x] Panel admin CRUD konten (PHP + SQLite)
-- [ ] Ganti kontak final (WhatsApp, email, LinkedIn, Instagram) — bisa lewat panel admin
-- [ ] Ganti screenshot proyek & foto/avatar Hero (sekarang placeholder berlabel)
-- [ ] Ganti CV dummy dengan CV final
-- [ ] Form kontak: v1 via `mailto:` — opsi kirim langsung (PHP mail) menyusul
-- [ ] Deploy ke server pemilik + domain final (ubah canonical/OG di `index.html`)
-
 ---
 
 *Semua nama, karakter, dan aset tema di situs ini orisinal/generik — tanpa aset Nintendo.*
