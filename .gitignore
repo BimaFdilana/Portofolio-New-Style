@@ -3,3 +3,9 @@ dist
 .DS_Store
 *.local
 .env
+server/config.php
+server/data.sqlite
+server/data.sqlite-journal
+server/data.sqlite-wal
+server/data.sqlite-shm
+tsconfig.tsbuildinfo

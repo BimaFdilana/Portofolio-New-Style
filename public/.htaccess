@@ -1,0 +1,6 @@
+# Portofolio (Apache): API -> server/api.php, sisanya SPA.
+RewriteEngine On
+RewriteRule ^api/(.*)$ server/api.php/$1 [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

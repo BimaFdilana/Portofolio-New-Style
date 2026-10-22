@@ -1,0 +1,5 @@
+# Folder server: hanya api.php yang boleh diakses dari web.
+Require all denied
+<Files "api.php">
+    Require all granted
+</Files>

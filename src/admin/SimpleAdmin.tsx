@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { sb } from './supabaseClient'
+import { api } from './api'
 import { BiField, btnDanger, btnGhost, btnPrimary, Field, inputCls, Notice } from './ui'
 
 function useTable<T>(table: string) {
   const [rows, setRows] = useState<T[]>([])
   const load = useCallback(async () => {
-    const { data } = await sb().from(table).select('*').order('sort')
-    setRows((data as T[]) ?? [])
+    try { setRows(await api.list<T>(table)) } catch { setRows([]) }
   }, [table])
   useEffect(() => { load() }, [load])
   return { rows, load }
@@ -30,8 +29,8 @@ export function CertificatesAdmin() {
   const save = async () => {
     if (!form) return
     const { id, ...payload } = form
-    const res = id ? await sb().from('certificates').update(payload).eq('id', id) : await sb().from('certificates').insert(payload)
-    if (res.error) { setMsg('Gagal: ' + res.error.message); return }
+    try { if (id) await api.update('certificates', id, payload); else await api.insert('certificates', payload) }
+    catch (ex) { setMsg('Gagal: ' + (ex instanceof Error ? ex.message : '')); return }
     setMsg('Sertifikat tersimpan.'); setForm(null); load()
   }
   return (
@@ -44,7 +43,7 @@ export function CertificatesAdmin() {
             <div key={r.id} className="flex items-center gap-3 px-4 py-3 flex-wrap">
               <p className="font-medium text-gray-900 flex-1 min-w-[200px]">{r.title_id} <span className="text-gray-400 font-normal">· {r.issuer} · {r.year}</span></p>
               <button className={btnGhost} onClick={() => setForm(r)}>Ubah</button>
-              <button className={btnDanger} onClick={async () => { await sb().from('certificates').delete().eq('id', r.id); load() }}>Hapus</button>
+              <button className={btnDanger} onClick={async () => { await api.remove('certificates', r.id); load() }}>Hapus</button>
             </div>
           ))}
           {rows.length === 0 && <p className="px-4 py-6 text-sm text-gray-500">Belum ada sertifikat.</p>}
@@ -76,8 +75,8 @@ export function SkillsAdmin() {
     if (!form) return
     const { id, ...payload } = form
     const clean = { ...payload, items: payload.items.filter(i => i.name) }
-    const res = id ? await sb().from('skill_categories').update(clean).eq('id', id) : await sb().from('skill_categories').insert(clean)
-    if (res.error) { setMsg('Gagal: ' + res.error.message); return }
+    try { if (id) await api.update('skill_categories', id, clean); else await api.insert('skill_categories', clean) }
+    catch (ex) { setMsg('Gagal: ' + (ex instanceof Error ? ex.message : '')); return }
     setMsg('Keahlian tersimpan.'); setForm(null); load()
   }
   return (
@@ -90,7 +89,7 @@ export function SkillsAdmin() {
             <div key={r.id} className="flex items-center gap-3 px-4 py-3 flex-wrap">
               <p className="font-medium text-gray-900 flex-1 min-w-[200px]">{r.icon} {r.title_id} <span className="text-gray-400 font-normal">· {r.items?.length ?? 0} item</span></p>
               <button className={btnGhost} onClick={() => setForm(r)}>Ubah</button>
-              <button className={btnDanger} onClick={async () => { await sb().from('skill_categories').delete().eq('id', r.id); load() }}>Hapus</button>
+              <button className={btnDanger} onClick={async () => { await api.remove('skill_categories', r.id); load() }}>Hapus</button>
             </div>
           ))}
           {rows.length === 0 && <p className="px-4 py-6 text-sm text-gray-500">Belum ada kategori keahlian.</p>}
@@ -130,8 +129,8 @@ export function JourneyAdmin() {
   const save = async () => {
     if (!form) return
     const { id, ...payload } = form
-    const res = id ? await sb().from('journey').update(payload).eq('id', id) : await sb().from('journey').insert(payload)
-    if (res.error) { setMsg('Gagal: ' + res.error.message); return }
+    try { if (id) await api.update('journey', id, payload); else await api.insert('journey', payload) }
+    catch (ex) { setMsg('Gagal: ' + (ex instanceof Error ? ex.message : '')); return }
     setMsg('Perjalanan tersimpan.'); setForm(null); load()
   }
   return (
@@ -144,7 +143,7 @@ export function JourneyAdmin() {
             <div key={r.id} className="flex items-center gap-3 px-4 py-3 flex-wrap">
               <p className="font-medium text-gray-900 flex-1 min-w-[220px]">{r.period} — {r.title_id} {r.active && <span className="text-green-600 text-xs font-bold">AKTIF</span>}</p>
               <button className={btnGhost} onClick={() => setForm(r)}>Ubah</button>
-              <button className={btnDanger} onClick={async () => { await sb().from('journey').delete().eq('id', r.id); load() }}>Hapus</button>
+              <button className={btnDanger} onClick={async () => { await api.remove('journey', r.id); load() }}>Hapus</button>
             </div>
           ))}
           {rows.length === 0 && <p className="px-4 py-6 text-sm text-gray-500">Belum ada catatan perjalanan.</p>}
@@ -188,14 +187,14 @@ export function SettingsAdmin() {
   const [msg, setMsg] = useState('')
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
-    sb().from('site_settings').select('data').eq('id', 1).single().then(({ data: row }) => {
-      setData((row?.data as Record<string, string>) ?? {}); setLoaded(true)
-    })
+    api.getSettings().then(({ data: d }) => {
+      setData((d as Record<string, string>) ?? {}); setLoaded(true)
+    }).catch(() => setLoaded(true))
   }, [])
   const save = async () => {
     const payload: Record<string, unknown> = { ...data, hp: Number(data.hp || 99), level: Number(data.level || 12), available: data.available !== 'false' }
-    const { error } = await sb().from('site_settings').upsert({ id: 1, data: payload })
-    setMsg(error ? 'Gagal: ' + error.message : 'Pengaturan tersimpan & live di situs.')
+    try { await api.saveSettings(payload); setMsg('Pengaturan tersimpan & live di situs.') }
+    catch (ex) { setMsg('Gagal: ' + (ex instanceof Error ? ex.message : '')) }
   }
   if (!loaded) return <p className="text-sm text-gray-500">Memuat…</p>
   return (

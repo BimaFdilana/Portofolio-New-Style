@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { sb } from './supabaseClient'
+import { api } from './api'
 import { BiField, btnDanger, btnGhost, btnPrimary, Field, inputCls, Notice } from './ui'
 
 interface BossForm { tid: string; ten: string; bid: string; ben: string }
@@ -41,8 +41,7 @@ export function ProjectsAdmin() {
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
 
   const load = useCallback(async () => {
-    const { data } = await sb().from('projects').select('*').order('sort')
-    setRows((data as Row[]) ?? [])
+    try { setRows(await api.list<Row>('projects')) } catch { setRows([]) }
   }, [])
   useEffect(() => { load() }, [load])
 
@@ -66,16 +65,16 @@ export function ProjectsAdmin() {
       boss: form.boss.filter(b => b.tid || b.bid).map(b => ({ title: { id: b.tid, en: b.ten }, body: { id: b.bid, en: b.ben } })),
       demo: form.demo, repo: form.repo, sort: form.sort, published: form.published,
     }
-    const res = form.id
-      ? await sb().from('projects').update(payload).eq('id', form.id)
-      : await sb().from('projects').insert(payload)
-    if (res.error) { setMsg('Gagal menyimpan: ' + res.error.message); return }
+    try {
+      if (form.id) await api.update('projects', form.id, payload)
+      else await api.insert('projects', payload)
+    } catch (ex) { setMsg('Gagal menyimpan: ' + (ex instanceof Error ? ex.message : '')); return }
     setMsg('Proyek tersimpan. Perubahan sudah live di situs.')
     setForm(null); load()
   }
 
   const del = async (id: string) => {
-    await sb().from('projects').delete().eq('id', id)
+    await api.remove('projects', id)
     setConfirmDel(null); setMsg('Proyek dihapus.'); load()
   }
 

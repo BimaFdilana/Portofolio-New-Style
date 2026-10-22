@@ -16,10 +16,10 @@ npm run build    # produksi -> dist/
 npm run preview  # pratinjau build
 ```
 
-Konten situs bisa diubah lewat **panel admin `/admin`** (Supabase) — lihat `ADMIN.md`.
+Konten situs bisa diubah lewat **panel admin `/admin`** (backend PHP + SQLite, folder `server/`) — lihat `ADMIN.md`.
 
-Deploy: hubungkan repo ini ke **Vercel** (preset Vite) — `vercel.json` sudah berisi
-rewrite SPA + header cache/keamanan. Atau hosting statis apa pun dari folder `dist/`.
+Deploy (keputusan pemilik): ke **server sendiri** — upload isi `dist/` + folder `server/`,
+isi `server/config.php`, selesai (panduan: `ADMIN.md`). `vercel.json` tidak dipakai.
 
 ## Struktur
 
@@ -27,6 +27,7 @@ rewrite SPA + header cache/keamanan. Atau hosting statis apa pun dari folder `di
 src/
   data/content.ts     <- SEMUA konten situs (proyek, skill, sertifikat, kontak)
   lib/audio.ts        <- mesin SFX 8-bit + BGM chiptune (WebAudio, tanpa file)
+server/               <- API PHP + SQLite (api.php) untuk konten & panel admin
   lib/i18n.ts         <- kamus dwibahasa ID/EN
   lib/store.tsx       <- state global (bahasa, tema gelap, mute, BGM)
   components/         <- Boot (start/loading), Navbar, Hero, Sections, ui
@@ -52,7 +53,7 @@ public/assets/        <- bg-sky.webp (background pixel, 17 KB), og-image.jpg, CV
 - [ ] Ganti screenshot proyek (sekarang blok placeholder berlabel) & foto/avatar Hero
 - [ ] Ganti CV dummy (`public/assets/cv-bima-fadi-lana.pdf`) dengan CV final
 - [ ] Form kontak: v1 memakai `mailto:` — sambungkan EmailJS/Formspree bila ingin kirim tanpa klien email
-- [x] Panel admin CRUD konten di `/admin` (Supabase) — setup sekali oleh pemilik, lihat `ADMIN.md`
+- [x] Panel admin CRUD konten di `/admin` (PHP + SQLite di server sendiri) — lihat `ADMIN.md`
 - [ ] Domain final (ubah canonical/OG di `index.html`)
 
 Semua aset & nama di tema ini orisinal/generik — tanpa aset Nintendo.
