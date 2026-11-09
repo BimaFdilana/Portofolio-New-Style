@@ -22,6 +22,11 @@
 }
 
 html { scroll-behavior: smooth; }
+/* Jangan biarkan konten melebar melewati layar di HP: kalau ada elemen yang
+ * overflow horizontal, layout viewport ikut melebar dan elemen fixed yang
+ * berlabuh di kanan (maskot) terdorong keluar layar. `clip` (bukan hidden)
+ * supaya position: sticky di navbar tetap jalan. */
+html, body { overflow-x: clip; }
 body { font-family: var(--font-sans); color: var(--color-ink); }
 
 .font-pixel { font-family: var(--font-pixel); }

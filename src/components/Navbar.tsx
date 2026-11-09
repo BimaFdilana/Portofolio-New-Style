@@ -49,7 +49,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(43,33,24,.35)]">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[58px] flex items-center gap-2">
         <span className={`hidden lg:inline font-pixel text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
-        <button className="font-pixel text-[11px] text-terra shrink-0" onClick={() => nav('')} aria-label="New quest - home">
+        <button className="font-pixel text-[11px] text-terra shrink-0 hidden min-[400px]:inline-block" onClick={() => nav('')} aria-label="New quest - home">
           NEW QUEST
         </button>
         <span className={`hidden lg:inline font-pixel text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
