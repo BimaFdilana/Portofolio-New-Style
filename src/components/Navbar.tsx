@@ -104,7 +104,8 @@ export function Navbar() {
   )
 }
 
-/** Tombol melayang: Spirit Guide (kontak cepat) + jalan pintas game. */
+/** Tombol melayang: Spirit Guide (kontak cepat). Jalan pintas Mini Dungeon
+ *  dihapus — game tetap bisa dibuka lewat menu ⚔ GAME di navbar. */
 export function FloatingButtons() {
   const { t } = useApp()
   const { owner } = useContent()
@@ -119,11 +120,6 @@ export function FloatingButtons() {
         🧚
         <span className="absolute -top-2 -right-2 bg-ochre text-ink font-pixel text-[7px] px-1 py-[3px] border-2 border-ink">NEW</span>
       </button>
-      <Link to="/game" aria-label="Mini Dungeon"
-        className="fixed right-3 bottom-4 z-[60] btn-pixel !bg-terra flex items-center gap-2">
-        ⚔ MINI DUNGEON
-        <span className="absolute -top-3 -right-2 bg-ochre text-ink font-pixel text-[7px] px-1 py-[3px] border-2 border-ink">NEW</span>
-      </Link>
       {guide && (
         <div className="fixed inset-0 z-[70] bg-ink/60 flex items-center justify-center p-4" onClick={() => setGuide(false)}>
           <div className="dialog-rpg max-w-sm w-full p-5" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={t('guide.title')}>
