@@ -25,11 +25,25 @@ export function Navbar() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [questFlash, setQuestFlash] = useState(false)
+  // Menu aktif: langsung menyala saat ditekan, lalu mengikuti section yang
+  // sedang terlihat saat scroll (scroll-spy). '' = Beranda (paling atas).
+  const [active, setActive] = useState('')
+  useEffect(() => {
+    if (pathname !== '/') { setActive(''); return }
+    const ids = ['#skills', '#projects', '#certs', '#contact']
+    const onScroll = () => { if (window.scrollY < 120) setActive('') }
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`)
+    }, { rootMargin: '-25% 0px -65% 0px' })
+    ids.forEach(id => { const el = document.querySelector(id); if (el) obs.observe(el) })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { obs.disconnect(); window.removeEventListener('scroll', onScroll) }
+  }, [pathname])
 
   // Penanda quest baru: berkedip 3 hari pertama setiap bulan (sentuhan tema).
   useEffect(() => { setQuestFlash(new Date().getDate() <= 3) }, [])
 
-  const nav = (hash: string) => { setOpen(false); goSection(navigate, pathname, hash) }
+  const nav = (hash: string) => { setOpen(false); setActive(hash); goSection(navigate, pathname, hash) }
 
   return (
     <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(43,33,24,.35)]">
@@ -45,8 +59,8 @@ export function Navbar() {
 
         <nav className="hidden md:flex items-center gap-5 ml-8" aria-label="Utama">
           {LINKS.map(l => (
-            <button key={l.key} onClick={() => nav(l.hash)}
-              className="font-pixel text-[10px] hover:text-terra transition-colors">
+            <button key={l.key} onClick={() => nav(l.hash)} aria-current={active === l.hash ? true : undefined}
+              className={`font-pixel text-[10px] transition-colors ${active === l.hash ? 'text-terra underline decoration-2 underline-offset-4' : 'hover:text-terra'}`}>
               {t(l.key as never)}
             </button>
           ))}
@@ -79,7 +93,8 @@ export function Navbar() {
       {open && (
         <nav className="md:hidden border-t-[3px] border-ink bg-parchment dark:bg-nightdeep px-4 py-3 flex flex-col gap-3" aria-label="Menu seluler">
           {LINKS.map(l => (
-            <button key={l.key} className="font-pixel text-[11px] text-left" onClick={() => nav(l.hash)}>{t(l.key as never)}</button>
+            <button key={l.key} className={`font-pixel text-[11px] text-left ${active === l.hash ? 'text-terra' : ''}`}
+              onClick={() => nav(l.hash)}>{active === l.hash ? '▶ ' : ''}{t(l.key as never)}</button>
           ))}
           <Link to="/game" className="font-pixel text-[11px] text-terra" onClick={() => setOpen(false)}>⚔ {t('nav.game')}</Link>
           <button className="font-pixel text-[11px] text-left" onClick={toggleMuted}>{muted ? '🔇 UNMUTE SFX' : '🔊 MUTE SFX'}</button>
