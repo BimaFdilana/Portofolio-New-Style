@@ -24,7 +24,10 @@ function initialLang(): Lang {
 function initialDark(): boolean {
   const saved = localStorage.getItem('theme')
   if (saved) return saved === 'dark'
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+  // Default: LIGHT — jangan ikuti prefers-color-scheme sistem. Dulu default
+  // mengikuti OS, jadi pengunjung bermode gelap (termasuk Pilih di Mac-nya)
+  // langsung dapat dark mode. Pilihan eksplisit via tombol 🌙 tetap dihormati.
+  return false
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
