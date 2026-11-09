@@ -54,11 +54,11 @@ function Dashboard() {
     })
   }, [])
   const cards = [
-    { to: 'projects', label: 'Proyek (Dungeons)', table: 'projects', desc: 'Tambah, ubah, hapus proyek yang tampil di situs.' },
-    { to: 'certificates', label: 'Sertifikat (Relics)', table: 'certificates', desc: 'Kelola daftar sertifikat.' },
-    { to: 'skills', label: 'Keahlian (Inventory)', table: 'skill_categories', desc: 'Kategori skill beserta levelnya.' },
-    { to: 'journey', label: 'Perjalanan (Adventure Log)', table: 'journey', desc: 'Riwayat karier di halaman utama.' },
-    { to: 'settings', label: 'Pengaturan Situs', table: '', desc: 'Kontak, tautan sosial, panel karakter hero.' },
+    { to: '/admin/projects', label: 'Proyek (Dungeons)', table: 'projects', desc: 'Tambah, ubah, hapus proyek yang tampil di situs.' },
+    { to: '/admin/certificates', label: 'Sertifikat (Relics)', table: 'certificates', desc: 'Kelola daftar sertifikat.' },
+    { to: '/admin/skills', label: 'Keahlian (Inventory)', table: 'skill_categories', desc: 'Kategori skill beserta levelnya.' },
+    { to: '/admin/journey', label: 'Perjalanan (Adventure Log)', table: 'journey', desc: 'Riwayat karier di halaman utama.' },
+    { to: '/admin/settings', label: 'Pengaturan Situs', table: '', desc: 'Kontak, tautan sosial, panel karakter hero.' },
   ]
   return (
     <div>
@@ -77,13 +77,15 @@ function Dashboard() {
   )
 }
 
+// Link absolut: link relatif di bawah route /admin/* akan menempel ke URL saat ini
+// (mis. dari /admin/projects, 'certificates' jadi /admin/projects/certificates -> blank).
 const NAV = [
-  { to: '', label: 'Dashboard', end: true },
-  { to: 'projects', label: 'Proyek', end: false },
-  { to: 'certificates', label: 'Sertifikat', end: false },
-  { to: 'skills', label: 'Keahlian', end: false },
-  { to: 'journey', label: 'Perjalanan', end: false },
-  { to: 'settings', label: 'Pengaturan', end: false },
+  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin/projects', label: 'Proyek', end: false },
+  { to: '/admin/certificates', label: 'Sertifikat', end: false },
+  { to: '/admin/skills', label: 'Keahlian', end: false },
+  { to: '/admin/journey', label: 'Perjalanan', end: false },
+  { to: '/admin/settings', label: 'Pengaturan', end: false },
 ]
 
 function Layout({ onLogout }: { onLogout: () => void }) {
@@ -113,6 +115,12 @@ function Layout({ onLogout }: { onLogout: () => void }) {
           <Route path="skills" element={<SkillsAdmin />} />
           <Route path="journey" element={<JourneyAdmin />} />
           <Route path="settings" element={<SettingsAdmin />} />
+          <Route path="*" element={
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Halaman admin tidak ditemukan</h1>
+              <p className="text-sm text-gray-500 mt-1">Alamatnya mungkin salah ketik. Kembali ke <Link to="/admin" className="text-blue-600 underline">Dashboard</Link>.</p>
+            </div>
+          } />
         </Routes>
       </main>
     </div>
