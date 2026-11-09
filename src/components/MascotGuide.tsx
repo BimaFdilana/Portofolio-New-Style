@@ -16,12 +16,12 @@ const H = 128 // tinggi tampilan (px); kanvas sprite 420x560 -> lebar 96
 const WALK_GAP = 260 // ms tanpa scroll sebelum dianggap berhenti jalan
 const STEP_MS = 150 // pergantian frame langkah saat jalan
 
-/** Pemandu karakter full-body di TEPI KIRI website. Dia tidak lagi mengikuti
+/** Pemandu karakter full-body di TEPI KANAN website. Dia tidak lagi mengikuti
  *  kursor — posisinya naik mengikuti progres scroll (makin jauh di-scroll,
- *  makin tinggi dia "memanjat" tepi kiri), dan dia BERJALAN (siklus 2 frame)
+ *  makin tinggi dia "memanjat" tepi kanan), dan dia BERJALAN (siklus 2 frame)
  *  selama pengguna meng-scroll; saat diam dia berdiri santai. Klik dia untuk
  *  melambai + tips acak. Bisa disembunyikan & dipanggil lagi. Hormat
- *  reduced-motion: parkir di kiri bawah, tanpa animasi jalan. */
+ *  reduced-motion: parkir di kanan bawah, tanpa animasi jalan. */
 export function MascotGuide() {
   const { t } = useApp()
   const { pathname } = useLocation()
@@ -147,7 +147,7 @@ export function MascotGuide() {
   if (hidden) {
     return (
       <button onClick={onShow} aria-label={t('mascot.show')}
-        className="fixed left-3 bottom-24 z-[60] w-11 h-11 rounded-full bg-white border-[3px] border-ink shadow-[3px_3px_0_var(--color-ink)] text-xl anim-floaty">
+        className="fixed right-3 bottom-24 z-[60] w-11 h-11 rounded-full bg-white border-[3px] border-ink shadow-[3px_3px_0_var(--color-ink)] text-xl anim-floaty">
         💗
       </button>
     )
@@ -155,13 +155,13 @@ export function MascotGuide() {
 
   return (
     <div ref={wrapRef}
-      className="fixed left-2 top-0 z-[60] pointer-events-none will-change-transform"
+      className="fixed right-2 top-0 z-[60] pointer-events-none will-change-transform"
       style={reduced ? { top: 'auto', bottom: 16 } : undefined}>
       <div className="relative">
         {bubble && (
-          <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 w-max max-w-[220px] dialog-rpg px-3 py-2 text-center pointer-events-none">
+          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-max max-w-[220px] dialog-rpg px-3 py-2 text-center pointer-events-none">
             <p className="text-[13px] leading-snug font-bold text-ink">{bubble}</p>
-            <span className="absolute left-[-7px] top-1/2 -translate-y-1/2 w-3 h-3 bg-cream border-t-2 border-l-2 border-ink rotate-45" />
+            <span className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3 h-3 bg-cream border-t-2 border-r-2 border-ink rotate-45" />
           </div>
         )}
         <button ref={btnRef} onClick={onMascotClick} aria-label="Pemandu karakter"
@@ -174,7 +174,7 @@ export function MascotGuide() {
           ))}
         </button>
         <button onClick={onHide} aria-label={t('mascot.hide')}
-          className="pointer-events-auto absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white border-2 border-ink text-[11px] leading-none text-ink shadow-sm">
+          className="pointer-events-auto absolute -top-1 -left-1 w-6 h-6 rounded-full bg-white border-2 border-ink text-[11px] leading-none text-ink shadow-sm">
           ✕
         </button>
       </div>
