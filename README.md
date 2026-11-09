@@ -10,8 +10,8 @@ Dibangun berdasarkan **PRD v1.4** dan **mockup v3** yang telah disetujui pemilik
 | --- | --- |
 | **Tema** | Adventure RPG — start screen, loading screen, mini-game |
 | **Frontend** | React 19 + Vite + TypeScript + Tailwind CSS v4 |
-| **Backend konten** | PHP + SQLite (satu file API, tanpa layanan eksternal) |
-| **Panel admin** | `/admin` — CRUD konten, UI sederhana |
+| **Backend konten** | Vercel Serverless Functions (Node) + Turso (SQLite cloud, gratis) |
+| **Panel admin** | `/admin` — CRUD konten, UI sederhana (butuh database Turso, lihat `ADMIN.md`) |
 | **Bahasa** | Indonesia (default) & English |
 | **Performa** | JS awal ±100 KB gzip · background 17 KB — ringan & cepat |
 | **Deploy** | Vercel (frontend statis; setiap push ke `main` deploy ulang otomatis). Panel admin butuh API PHP terpisah — lihat `ADMIN.md` |
@@ -94,7 +94,9 @@ selalu berada di kartu/dialog krem agar mudah dibaca.
 - **React 19 + Vite + TypeScript** — SPA cepat, route game & admin di-*lazy load*
 - **Tailwind CSS v4** — tema pixel (font Press Start 2P + Nunito)
 - **WebAudio API** — seluruh SFX & BGM disintesis, tanpa file audio
-- **PHP 8 + SQLite (PDO)** — `server/api.php`: konten publik, login admin, CRUD
+- **Vercel Serverless Functions (Node, folder `api/`) + Turso (libSQL/SQLite
+  cloud)** — konten publik, login admin, CRUD; skema & seed sama dengan
+  backend PHP lama (`server/`)
 - SEO lengkap: meta OG, Twitter Card, JSON-LD Person + WebSite, sitemap-ready
 
 ## 📁 Struktur Proyek
@@ -129,11 +131,13 @@ Menguji beserta API & panel admin secara lokal — lihat **ADMIN.md**
 ## 🔐 Panel Admin
 
 Konten situs (proyek, sertifikat, keahlian, perjalanan, kontak/pengaturan)
-diubah lewat **`/admin`** dengan login email + password — **tetapi hanya bila
-API PHP ikut di-hosting** (mis. di cPanel, lihat **ADMIN.md**). Di deploy
-Vercel saja (mode statis), API tidak tersedia sehingga `/admin` menampilkan
-penjelasan itu saat login; konten diubah lewat `src/data/content.ts` dan
-`server/seed.json`, lalu push ke GitHub agar Vercel deploy ulang.
+diubah lewat **`/admin`** dengan login email + password. Backend-nya berjalan
+sebagai Serverless Functions di Vercel dengan database **Turso** (SQLite
+cloud, paket gratis) — tidak ada PHP/cPanel yang terlibat. Panduan
+penyiapan database & akun admin: **ADMIN.md**.
+
+Selama database belum disiapkan, situs tetap tampil penuh dengan data
+statis bawaannya; `/admin` menampilkan penjelasan saat login gagal.
 
 ---
 
