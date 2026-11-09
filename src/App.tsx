@@ -5,6 +5,7 @@ import { ContentProvider } from './lib/content'
 import { sfx, startBgm } from './lib/audio'
 import { LoadingScreen, StartScreen } from './components/Boot'
 import { FloatingButtons, Navbar } from './components/Navbar'
+import { MascotGuide } from './components/MascotGuide'
 import { spawnConfetti } from './components/ui'
 import { Home } from './pages/Home'
 import { ProjectDetail } from './pages/ProjectDetail'
@@ -78,6 +79,7 @@ function Site() {
         </Routes>
       </Suspense>
       <FloatingButtons />
+      <MascotGuide />
       {toast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[85] dialog-rpg px-5 py-3 font-pixel text-[10px]" role="status">
           🪙 {t('egg.found')}
