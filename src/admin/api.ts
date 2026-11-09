@@ -21,6 +21,23 @@ async function req<T>(path: string, opts: RequestInit = {}): Promise<T> {
   return data as T
 }
 
+// True bila API PHP menjawab JSON di /api/content. Di hosting statis murni
+// (mis. Vercel tanpa backend), /api/* me-rewrite ke index.html (text/html)
+// sehingga probe ini false — panel admin lalu menampilkan penjelasan, bukan
+// sekadar "Login gagal."
+export async function apiAvailable(): Promise<boolean> {
+  try {
+    const ctrl = new AbortController()
+    const to = setTimeout(() => ctrl.abort(), 5000)
+    const res = await fetch(`${BASE}/api/content`, { signal: ctrl.signal })
+    clearTimeout(to)
+    const ct = res.headers.get('content-type') ?? ''
+    return res.ok && ct.includes('application/json')
+  } catch {
+    return false
+  }
+}
+
 export const api = {
   token: () => localStorage.getItem(TOKEN_KEY),
   email: () => localStorage.getItem(EMAIL_KEY),

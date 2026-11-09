@@ -1,5 +1,10 @@
 # Panduan Admin — Panel CRUD Konten (PHP + SQLite)
 
+> **Catatan:** panduan ini hanya berlaku bila API PHP di-hosting terpisah
+> (mis. cPanel). Bila situs hanya di-deploy ke Vercel (mode statis), API
+> tidak tersedia, `/admin` tidak bisa login, dan konten diubah lewat
+> `src/data/content.ts` + `server/seed.json` lalu push ke GitHub.
+
 Panel admin ada di **`/admin`**. Desainnya sengaja **sederhana & polos**
 (bukan tema game): dashboard ringkasan + menu **Proyek, Sertifikat, Keahlian,
 Perjalanan, Pengaturan**.

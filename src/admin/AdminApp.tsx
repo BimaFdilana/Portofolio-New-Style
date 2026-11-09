@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, NavLink, Route, Routes } from 'react-router-dom'
-import { api } from './api'
+import { api, apiAvailable } from './api'
 import { btnPrimary, Field, inputCls, Notice } from './ui'
 import { ProjectsAdmin } from './ProjectsAdmin'
 import { CertificatesAdmin, JourneyAdmin, SettingsAdmin, SkillsAdmin } from './SimpleAdmin'
@@ -16,7 +16,10 @@ function Login({ onDone }: { onDone: () => void }) {
       await api.login(email, password)
       onDone()
     } catch (ex) {
-      setErr(ex instanceof Error ? ex.message : 'Login gagal. Pastikan server API (folder server/) sudah terpasang & config.php sudah diisi.')
+      const apiUp = await apiAvailable()
+      setErr(apiUp
+        ? (ex instanceof Error ? ex.message : 'Login gagal. Pastikan server API (folder server/) sudah terpasang & config.php sudah diisi.')
+        : 'API tidak tersedia di hosting ini (mode statis — mis. Vercel tanpa backend PHP). Panel admin butuh API PHP: konten diubah lewat kode, lalu push ke GitHub agar Vercel deploy ulang.')
     }
     setBusy(false)
   }

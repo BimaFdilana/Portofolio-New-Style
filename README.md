@@ -14,7 +14,7 @@ Dibangun berdasarkan **PRD v1.4** dan **mockup v3** yang telah disetujui pemilik
 | **Panel admin** | `/admin` — CRUD konten, UI sederhana |
 | **Bahasa** | Indonesia (default) & English |
 | **Performa** | JS awal ±100 KB gzip · background 17 KB — ringan & cepat |
-| **Deploy** | Server sendiri (PHP) — lihat `ADMIN.md` |
+| **Deploy** | Vercel (frontend statis; setiap push ke `main` deploy ulang otomatis). Panel admin butuh API PHP terpisah — lihat `ADMIN.md` |
 
 ---
 
@@ -129,8 +129,11 @@ Menguji beserta API & panel admin secara lokal — lihat **ADMIN.md**
 ## 🔐 Panel Admin
 
 Konten situs (proyek, sertifikat, keahlian, perjalanan, kontak/pengaturan)
-diubah lewat **`/admin`** dengan login email + password. Backend-nya cukup
-PHP + SQLite di server sendiri. Panduan pemasangan & keamanan: **ADMIN.md**.
+diubah lewat **`/admin`** dengan login email + password — **tetapi hanya bila
+API PHP ikut di-hosting** (mis. di cPanel, lihat **ADMIN.md**). Di deploy
+Vercel saja (mode statis), API tidak tersedia sehingga `/admin` menampilkan
+penjelasan itu saat login; konten diubah lewat `src/data/content.ts` dan
+`server/seed.json`, lalu push ke GitHub agar Vercel deploy ulang.
 
 ---
 
