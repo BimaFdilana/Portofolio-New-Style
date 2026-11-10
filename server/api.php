@@ -285,6 +285,45 @@ if ($route === 'settings') {
     out(['error' => 'Metode tidak didukung.'], 405);
 }
 
+// ----- Ulasan publik (tanpa login admin; identitas via Google ID token) -----
+// Port 1:1 dari api/reviews.ts (Vercel). Pemberi ulasan masuk dengan Google
+// di /review/:slug; token diverifikasi ke Google sebelum disimpan. Ulasan
+// masuk sebagai testimonials dengan published = 0 (menunggu persetujuan).
+if ($route === 'reviews' && $method === 'POST') {
+    $b = body();
+    $clientId = getenv('VITE_GOOGLE_CLIENT_ID') ?: '';
+    if ($clientId === '') out(['error' => 'Login Google untuk ulasan belum dikonfigurasi.'], 503);
+    $token = (string)($b['id_token'] ?? '');
+    if ($token === '') out(['error' => 'Token Google tidak ada.'], 401);
+    $info = @file_get_contents('https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($token));
+    if ($info === false) out(['error' => 'Token Google tidak valid.'], 401);
+    $g = json_decode($info, true) ?: [];
+    $issOk = ($g['iss'] ?? '') === 'https://accounts.google.com' || ($g['iss'] ?? '') === 'accounts.google.com';
+    if (($g['aud'] ?? '') !== $clientId || !$issOk || empty($g['sub']) || empty($g['name']) || (int)($g['exp'] ?? 0) <= time()) {
+        out(['error' => 'Token Google tidak valid.'], 401);
+    }
+    $slug = trim((string)($b['project_slug'] ?? ''));
+    $rating = (int)($b['rating'] ?? 0);
+    $role = trim((string)($b['role'] ?? ''));
+    if (function_exists('mb_substr')) $role = mb_substr($role, 0, 100); else $role = substr($role, 0, 100);
+    $text = trim((string)($b['text'] ?? ''));
+    $len = function_exists('mb_strlen') ? mb_strlen($text) : strlen($text);
+    if ($slug === '') out(['error' => 'Proyek tidak dipilih.'], 400);
+    if ($rating < 1 || $rating > 5) out(['error' => 'Bintang harus 1–5.'], 400);
+    if ($len < 10) out(['error' => 'Ulasan terlalu pendek (minimal 10 karakter).'], 400);
+    if ($len > 1000) out(['error' => 'Ulasan terlalu panjang (maksimal 1000 karakter).'], 400);
+    $stmt = $pdo->prepare("SELECT slug FROM projects WHERE slug = ?");
+    $stmt->execute([$slug]);
+    if (!$stmt->fetchColumn()) out(['error' => 'Proyek tidak ditemukan.'], 404);
+    $stmt = $pdo->prepare("SELECT id FROM testimonials WHERE project_slug = ? AND name = ? AND text_id = ? LIMIT 1");
+    $stmt->execute([$slug, $g['name'], $text]);
+    if ($stmt->fetchColumn()) out(['error' => 'Ulasan yang sama sudah pernah dikirim.'], 409);
+    $max = (int)$pdo->query("SELECT MAX(sort) FROM testimonials WHERE project_slug = " . $pdo->quote($slug))->fetchColumn();
+    $pdo->prepare("INSERT INTO testimonials (project_slug, name, role, text_id, text_en, rating, sort, published, photo) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)")
+        ->execute([$slug, $g['name'], $role, $text, $text, $rating, $max + 1, $g['picture'] ?? '']);
+    out(['ok' => true], 201);
+}
+
 // ----- CRUD generik (admin) -----
 if (isset($TABLES[$route])) {
     requireAuth($pdo);

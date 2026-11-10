@@ -39,6 +39,26 @@ export function ProjectsAdmin() {
   const [form, setForm] = useState<FormState | null>(null)
   const [msg, setMsg] = useState('')
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
+  const [copied, setCopied] = useState<string | null>(null)
+
+  /** Salin link ulasan publik per proyek — dibagikan ke pemberi ulasan.
+   *  Mereka masuk dengan Google, mengisi form singkat, dan ulasannya
+   *  masuk ke menu Testimoni (tersembunyi sampai ditampilkan). */
+  const copyReviewLink = async (slug: string) => {
+    const url = `${window.location.origin}/review/${slug}`
+    try {
+      await navigator.clipboard.writeText(url)
+    } catch {
+      const ta = document.createElement('textarea')
+      ta.value = url
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      ta.remove()
+    }
+    setCopied(slug)
+    setTimeout(() => setCopied(c => (c === slug ? null : c)), 2000)
+  }
 
   const load = useCallback(async () => {
     try { setRows(await api.list<Row>('projects')) } catch { setRows([]) }
@@ -87,6 +107,11 @@ export function ProjectsAdmin() {
         <button className={btnPrimary} onClick={() => { setMsg(''); setForm({ ...empty, sort: rows.length + 1 }) }}>+ Tambah Proyek</button>
       </div>
       {msg && <div className="mt-4"><Notice kind="ok">{msg}</Notice></div>}
+      {!form && (
+        <p className="mt-3 text-sm text-gray-500">
+          🔗 <b>Link Ulasan:</b> salin link per proyek dan bagikan ke pemberi ulasan — mereka masuk dengan Google lalu mengisi form singkat. Ulasan baru masuk ke menu Testimoni dalam keadaan tersembunyi sampai kamu tampilkan.
+        </p>
+      )}
 
       {!form && (
         <div className="bg-white border border-gray-200 rounded-lg mt-5 overflow-x-auto">
@@ -104,6 +129,9 @@ export function ProjectsAdmin() {
                   <td className="px-4 py-3">{r.published ? 'Tayang' : 'Draf'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
+                      <button className={btnGhost} onClick={() => copyReviewLink(r.slug)} title={`${window.location.origin}/review/${r.slug}`}>
+                        {copied === r.slug ? '✓ Disalin!' : '🔗 Link Ulasan'}
+                      </button>
                       <button className={btnGhost} onClick={() => edit(r)}>Ubah</button>
                       {confirmDel === r.id ? (
                         <>

@@ -11,6 +11,7 @@ import { initSmoothScroll, scrollToEl } from './lib/smoothScroll'
 import { spawnConfetti } from './components/ui'
 import { Home } from './pages/Home'
 import { ProjectDetail } from './pages/ProjectDetail'
+import { ReviewPage } from './pages/ReviewPage'
 
 const MiniDungeon = lazy(() => import('./pages/MiniDungeon').then(m => ({ default: m.MiniDungeon })))
 const AdminApp = lazy(() => import('./admin/AdminApp'))
@@ -72,6 +73,8 @@ function Site() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dungeon/:slug" element={<ProjectDetail />} />
+          <Route path="/review/:slug" element={<ReviewPage />} />
+          <Route path="/ulasan/:slug" element={<ReviewPage />} />
           <Route path="/game" element={<MiniDungeon />} />
           <Route path="*" element={
             <main className="max-w-xl mx-auto px-4 py-24 text-center">

@@ -187,6 +187,9 @@ export function TestimonialsAdmin() {
     <div>
       <PageHead title="Testimoni Proyek" onAdd={() => setForm({ project_slug: projects[0]?.slug ?? '', name: '', role: '', text_id: '', text_en: '', rating: 5, sort: rows.length + 1, published: true, photo: '' })} />
       {msg && <div className="mt-4"><Notice kind="ok">{msg}</Notice></div>}
+      {!form && (
+        <div className="mt-4"><Notice kind="info">Ulasan baru dari halaman publik (/review/…) masuk ke sini dalam keadaan tersembunyi — centang “Tampilkan di situs” pada ulasannya untuk menampilkannya di halaman proyek.</Notice></div>
+      )}
       {!form ? (
         <div className="bg-white border border-gray-200 rounded-lg mt-5 divide-y divide-gray-100">
           {rows.map(r => (
