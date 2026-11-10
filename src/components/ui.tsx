@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react'
 export function SectionTitle({ icon, a, b }: { icon: string; a: string; b: string }) {
   return (
     <div className="text-center mb-8">
-      <span className="inline-block bg-sage text-white border-[3px] border-ink shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none">{icon}</span>
-      <h2 className="font-pixel text-xl sm:text-3xl mt-4 text-ink dark:text-parchment" style={{ textShadow: '3px 3px 0 rgba(255,248,231,.85)' }}>
-        {a} <span className="text-terra">{b}</span>
+      <span className="inline-block bg-gradient-to-b from-[#ffe066] to-[#ff9d00] text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none">{icon}</span>
+      <h2 className="font-display text-3xl sm:text-5xl mt-5 leading-tight">
+        <span className="title-chunky">{a}</span>{' '}
+        <span className="title-chunky-blue">{b}</span>
       </h2>
-      <div className="w-24 h-[5px] bg-dirt mx-auto mt-3 border-2 border-ink" />
+      <div className="w-28 h-[8px] bg-gradient-to-r from-[#ffc93c] to-[#ef3546] mx-auto mt-4 border-[3px] border-ink rounded-full" />
     </div>
   )
 }

@@ -263,8 +263,8 @@ export function MascotGuide() {
       <div className="relative">
         {bubble && (
           <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 w-max dialog-rpg px-3 py-2 text-center pointer-events-none ${mobile ? 'max-w-[180px]' : 'max-w-[220px]'}`}>
-            <p className={`leading-snug font-bold text-ink ${mobile ? 'text-[12px]' : 'text-[13px]'}`}>{bubble}</p>
-            <span className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3 h-3 bg-cream border-t-2 border-r-2 border-ink rotate-45" />
+            <p className={`leading-snug font-bold text-ink dark:text-parchment ${mobile ? 'text-[12px]' : 'text-[13px]'}`}>{bubble}</p>
+            <span className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3 h-3 bg-cream dark:bg-[#2c355e] border-t-2 border-r-2 border-ink rotate-45" />
           </div>
         )}
         <button ref={btnRef} onClick={onMascotClick} aria-label="Pemandu karakter"

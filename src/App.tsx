@@ -63,7 +63,7 @@ function Site() {
   return (
     <div className="min-h-screen bg-world bg-cream dark:bg-nightdeep">
       <Navbar />
-      <Suspense fallback={<div className="p-16 text-center font-pixel text-xs">LOADING…</div>}>
+      <Suspense fallback={<div className="p-16 text-center font-game text-xs">LOADING…</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dungeon/:slug" element={<ProjectDetail />} />
@@ -71,9 +71,9 @@ function Site() {
           <Route path="*" element={
             <main className="max-w-xl mx-auto px-4 py-24 text-center">
               <p className="text-6xl">🗺️</p>
-              <h1 className="font-pixel text-lg mt-6">404 — {t('detail.notfound')}</h1>
+              <h1 className="font-display text-2xl mt-6">404 — {t('detail.notfound')}</h1>
               <p className="font-bold mt-3">{t('detail.notfoundBody')}</p>
-              <Link to="/" className="btn-pixel !bg-night mt-6">← HOME</Link>
+              <Link to="/" className="btn-game btn-night mt-6">← HOME</Link>
             </main>
           } />
         </Routes>
@@ -81,7 +81,7 @@ function Site() {
       <FloatingButtons />
       <MascotGuide />
       {toast && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[85] dialog-rpg px-5 py-3 font-pixel text-[10px]" role="status">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[85] dialog-rpg px-5 py-3 font-game text-[10px]" role="status">
           🪙 {t('egg.found')}
         </div>
       )}
@@ -91,7 +91,7 @@ function Site() {
 
 function Root() {
   return (
-    <Suspense fallback={<div className="p-16 text-center font-pixel text-xs">LOADING…</div>}>
+    <Suspense fallback={<div className="p-16 text-center font-game text-xs">LOADING…</div>}>
       <Routes>
         <Route path="/admin/*" element={<AdminApp />} />
         <Route path="*" element={<Site />} />

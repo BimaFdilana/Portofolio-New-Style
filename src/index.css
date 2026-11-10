@@ -4,21 +4,25 @@
 
 @theme {
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
-  --font-pixel: "Press Start 2P", monospace;
-  --color-ink: #2b2118;
+  --font-display: "Titan One", "Baloo 2", sans-serif;
+  --font-game: "Baloo 2", "Nunito", sans-serif;
+  --color-ink: #1e2547;
   --color-parchment: #fff8e7;
-  --color-cream: #f7f0dc;
+  --color-cream: #fff3d6;
   --color-skysoft: #a9bfcc;
   --color-dirt: #8a6b4f;
   --color-dirtdeep: #7a5c3e;
-  --color-sage: #5f7f52;
-  --color-sagedeep: #435c39;
-  --color-ochre: #c9a227;
-  --color-terra: #b5533c;
-  --color-night: #2e3d4e;
-  --color-nightdeep: #22304a;
-  --color-steel: #4e7396;
-  --color-heart: #c4554d;
+  --color-sage: #2fae1e;
+  --color-sagedeep: #238a14;
+  --color-ochre: #e8a100;
+  --color-gold: #ffc93c;
+  --color-terra: #ef3546;
+  --color-night: #232a4d;
+  --color-nightdeep: #171d38;
+  --color-steel: #2f9bff;
+  --color-heart: #f43f5e;
+  --color-candy: #e93ec8;
+  --color-grape: #8b5cf6;
 }
 
 html { scroll-behavior: smooth; }
@@ -32,8 +36,6 @@ html, body { overflow-x: clip; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 body { font-family: var(--font-sans); color: var(--color-ink); }
 
-.font-pixel { font-family: var(--font-pixel); }
-
 /* Latar utama: ilustrasi pixel Sky + awan + rumput (contoh pemilik) */
 .bg-world {
   background-image: url('/assets/bg-sky.webp');
@@ -46,46 +48,94 @@ body { font-family: var(--font-sans); color: var(--color-ink); }
   background-image: linear-gradient(rgba(24, 34, 48, 0.72), rgba(24, 34, 48, 0.72)), url('/assets/bg-sky.webp');
 }
 
-/* Komponen gaya pixel */
+/* Komponen gaya game chunky (ala UI kit Gear Fight): tombol glossy
+ * bergradasi, outline tebal warna ink, sudut membulat, bayangan keras. */
 .dialog-rpg {
   background: var(--color-parchment);
   border: 3px solid var(--color-ink);
-  border-radius: 6px;
-  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #c9a86a, 4px 4px 0 rgba(43, 33, 24, 0.35);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 rgba(30, 37, 71, 0.35);
 }
 .dark .dialog-rpg {
-  background: #33475b; color: #fff8e7;
-  box-shadow: inset 0 0 0 2px #22304a, inset 0 0 0 4px #c9a227, 4px 4px 0 rgba(0,0,0,0.5);
+  background: #2c355e; color: #fff8e7;
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
 }
 .card-pixel {
   background: #fff;
   border: 3px solid var(--color-ink);
-  box-shadow: 5px 5px 0 var(--color-ink);
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 var(--color-ink);
 }
-.dark .card-pixel { background: #33475b; color: #fff8e7; box-shadow: 5px 5px 0 #000; }
-.btn-pixel {
+.dark .card-pixel { background: #2c355e; color: #fff8e7; box-shadow: 6px 6px 0 #000; }
+.btn-game {
   display: inline-block;
-  font-family: var(--font-pixel);
+  font-family: var(--font-game);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
   border: 3px solid var(--color-ink);
-  box-shadow: 4px 4px 0 var(--color-ink);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--color-ink), inset 0 2px 0 rgba(255,255,255,.45), inset 0 -3px 0 rgba(0,0,0,.14);
   color: #fff;
-  padding: 0.7rem 1rem;
-  font-size: 0.62rem;
+  padding: 0.8rem 1.25rem;
+  font-size: 0.82rem;
   line-height: 1;
-  transition: transform 60ms ease, box-shadow 60ms ease;
+  background: linear-gradient(180deg, #8be26a 0%, #43c62b 55%, #2f9e1d 100%);
+  transition: transform 60ms ease, box-shadow 60ms ease, filter 60ms ease;
   cursor: pointer;
   user-select: none;
+  text-align: center;
 }
-.btn-pixel:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--color-ink); }
+.btn-game:hover { filter: brightness(1.06); }
+.btn-game:active { transform: translate(2px, 3px); box-shadow: 0 1px 0 var(--color-ink), inset 0 2px 0 rgba(255,255,255,.35); }
+.btn-game:disabled { opacity: .45; filter: grayscale(.5); cursor: not-allowed; transform: none; }
+/* Varian warna tombol (sesuai UI kit: hijau=main, biru=info, kuning=sekunder,
+ * merah=batal, abu=nonaktif, pink=spesial, navy=gelap). */
+.btn-green { background: linear-gradient(180deg, #8be26a 0%, #43c62b 55%, #2f9e1d 100%); }
+.btn-blue { background: linear-gradient(180deg, #7cc4ff 0%, #2f9bff 55%, #1b6fe0 100%); }
+.btn-yellow { background: linear-gradient(180deg, #ffe066 0%, #ffc93c 55%, #ff9d00 100%); color: var(--color-ink); }
+.btn-red { background: linear-gradient(180deg, #ff7a86 0%, #ef3546 55%, #c81e32 100%); }
+.btn-grey { background: linear-gradient(180deg, #d3dde6 0%, #a9b8c6 55%, #8b9bab 100%); color: var(--color-ink); }
+.btn-pink { background: linear-gradient(180deg, #ff8ae2 0%, #e93ec8 55%, #b81d9e 100%); }
+.btn-night { background: linear-gradient(180deg, #4a5580 0%, #232a4d 55%, #171d38 100%); }
 .chip {
   display: inline-block; background: #fff; color: var(--color-ink);
-  border: 2px solid var(--color-ink); border-radius: 999px;
-  padding: 0.12rem 0.6rem; font-size: 0.78rem; font-weight: 700;
-  box-shadow: 2px 2px 0 rgba(43,33,24,.4); margin: 0 0.3rem 0.3rem 0;
+  border: 3px solid var(--color-ink); border-radius: 999px;
+  padding: 0.2rem 0.7rem; font-size: 0.78rem; font-weight: 800;
+  font-family: var(--font-game);
+  box-shadow: 2px 2px 0 var(--color-ink); margin: 0 0.3rem 0.3rem 0;
 }
-.dark .chip { background: #22304a; color: #fff8e7; }
-.bar-seg { height: 12px; border: 2.5px solid var(--color-ink); background: #fff; position: relative; overflow: hidden; }
-.bar-seg > i { position: absolute; inset: 0 auto 0 0; display: block; }
+.dark .chip { background: #232a4d; color: #fff8e7; }
+.bar-seg { height: 16px; border: 3px solid var(--color-ink); border-radius: 999px; background: #fff; position: relative; overflow: hidden; }
+.bar-seg > i { position: absolute; inset: 0 auto 0 0; display: block; border-radius: 999px; background: linear-gradient(180deg, #ffe066, #ffb800); }
+
+/* Judul besar chunky: huruf gradasi + outline tebal + bayangan jatuh. */
+.title-chunky {
+  font-family: var(--font-display);
+  background: linear-gradient(180deg, #fff3a3 0%, #ffd94d 35%, #ff9d00 75%, #ff7a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-ink);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 4px 0 rgba(30,37,71,.9));
+}
+.title-chunky-blue {
+  font-family: var(--font-display);
+  background: linear-gradient(180deg, #bfe6ff 0%, #6ec1ff 40%, #2f9bff 75%, #1b6fe0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-ink);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 4px 0 rgba(30,37,71,.9));
+}
+/* Mode gelap: outline judul jadi krem supaya gradasi tetap terbaca
+ * di atas latar navy. */
+.dark .title-chunky, .dark .title-chunky-blue {
+  -webkit-text-stroke-color: #fff8e7;
+  filter: drop-shadow(0 4px 0 rgba(0,0,0,.7));
+}
 
 @keyframes blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0; } }
 .anim-blink { animation: blink 1.1s steps(1) infinite; }

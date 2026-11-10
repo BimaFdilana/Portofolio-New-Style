@@ -8,11 +8,11 @@ import type { Testimonial } from '../data/content'
 
 /** Foto pemberi ulasan — gambar bila ada, kalau tidak lingkaran inisial nama. */
 const AVATAR_COLORS = [
-  ['#5f7f52', '#fff8e7'],
-  ['#b5533c', '#fff8e7'],
-  ['#c9a227', '#2b2118'],
-  ['#4e7396', '#fff8e7'],
-  ['#c4554d', '#fff8e7'],
+  ['#2fae1e', '#fff8e7'],
+  ['#ef3546', '#fff8e7'],
+  ['#e8a100', '#1e2547'],
+  ['#2f9bff', '#fff8e7'],
+  ['#e93ec8', '#fff8e7'],
 ] as const
 function Avatar({ name, photo }: { name: string; photo?: string }) {
   if (photo) {
@@ -22,7 +22,7 @@ function Avatar({ name, photo }: { name: string; photo?: string }) {
   const hash = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
   const [bg, fg] = AVATAR_COLORS[hash % AVATAR_COLORS.length]
   return (
-    <span aria-hidden className="w-12 h-12 rounded-full border-2 border-ink shrink-0 shadow-[2px_2px_0_var(--color-ink)] flex items-center justify-center font-pixel text-[11px]" style={{ background: bg, color: fg }}>
+    <span aria-hidden className="w-12 h-12 rounded-full border-2 border-ink shrink-0 shadow-[2px_2px_0_var(--color-ink)] flex items-center justify-center font-game text-[11px]" style={{ background: bg, color: fg }}>
       {initials}
     </span>
   )
@@ -53,13 +53,13 @@ function TestimonialsSlider({ items, lang }: { items: Testimonial[]; lang: 'id' 
     el.scrollBy({ left: dir * step, behavior: 'smooth' })
   }
   const arrowCls = (disabled: boolean) =>
-    `font-pixel text-[10px] border-2 border-ink px-2 py-[6px] shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
-      disabled ? 'bg-white/60 text-ink/30 dark:bg-night dark:text-white/30' : 'bg-ochre text-ink'
+    `font-game text-[10px] border-[3px] border-ink rounded-[10px] px-2 py-[6px] shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
+      disabled ? 'bg-white/60 text-ink/30 dark:bg-night dark:text-white/30' : 'bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink'
     }`
   return (
     <div>
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-pixel text-xs text-terra">{t('detail.testimonials')}</h2>
+        <h2 className="font-game text-sm text-terra">{t('detail.testimonials')}</h2>
         <div className="flex gap-2 shrink-0">
           <button className={arrowCls(atStart)} disabled={atStart} onClick={() => slide(-1)} aria-label={t('detail.testiPrev')}>◀</button>
           <button className={arrowCls(atEnd)} disabled={atEnd} onClick={() => slide(1)} aria-label={t('detail.testiNext')}>▶</button>
@@ -78,7 +78,7 @@ function TestimonialsSlider({ items, lang }: { items: Testimonial[]; lang: 'id' 
             <div className="flex items-center gap-3">
               <Avatar name={item.name} photo={item.photo} />
               <figcaption className="min-w-0">
-                <p className="font-pixel text-[10px] leading-relaxed">{item.name}</p>
+                <p className="font-game text-[10px] leading-relaxed">{item.name}</p>
                 <p className="text-xs font-bold text-ink/60 dark:text-white/60 mt-1">{item.role}</p>
               </figcaption>
             </div>
@@ -105,9 +105,9 @@ export function ProjectDetail() {
       <>
         <main className="max-w-4xl mx-auto px-4 py-20 text-center">
           <p className="text-6xl">🗺️</p>
-          <h1 className="font-pixel text-xl mt-6">{t('detail.notfound')}</h1>
+          <h1 className="font-display text-2xl mt-6">{t('detail.notfound')}</h1>
           <p className="font-bold mt-3">{t('detail.notfoundBody')}</p>
-          <Link to="/" className="btn-pixel !bg-night mt-6">{t('detail.back')}</Link>
+          <Link to="/" className="btn-game btn-night mt-6">{t('detail.back')}</Link>
         </main>
         <Footer />
       </>
@@ -117,47 +117,47 @@ export function ProjectDetail() {
   return (
     <>
       <main className="max-w-5xl mx-auto px-3 sm:px-4 py-10">
-        <Link to="/" className="font-pixel text-[10px] bg-parchment border-2 border-ink px-3 py-2 inline-block shadow-[3px_3px_0_rgba(43,33,24,.4)] dark:text-ink">
+        <Link to="/" className="font-game text-[11px] bg-parchment border-[3px] border-ink rounded-[10px] px-3 py-2 inline-block shadow-[3px_3px_0_var(--color-ink)] dark:text-ink">
           {t('detail.back')}
         </Link>
-        <div className="h-[240px] sm:h-[300px] border-[3px] border-ink mt-5 relative shadow-[6px_6px_0_var(--color-ink)]" style={{ background: p.grad }}>
-          <span className="absolute bottom-3 left-3 bg-parchment/95 border-2 border-ink px-2 py-1 font-pixel text-[8px]">[ SCREENSHOT PROYEK ]</span>
-          <span className="absolute top-3 right-3 bg-ochre border-2 border-ink font-pixel text-[9px] px-2 py-[6px]">{p.hue}</span>
+        <div className="h-[240px] sm:h-[300px] border-[3px] border-ink rounded-2xl mt-5 relative shadow-[6px_6px_0_var(--color-ink)]" style={{ background: p.grad }}>
+          <span className="absolute bottom-3 left-3 bg-parchment/95 border-[3px] border-ink rounded-[8px] px-2 py-1 font-game text-[9px]">[ SCREENSHOT PROYEK ]</span>
+          <span className="absolute top-3 right-3 bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink border-[3px] border-ink rounded-[10px] font-game text-[10px] px-2 py-[6px]">{p.hue}</span>
         </div>
         <div className="card-pixel p-5 sm:p-6 mt-6">
           <div className="flex flex-wrap justify-between gap-3 items-start">
-            <h1 className="font-pixel text-base sm:text-xl leading-relaxed">{p.name.toUpperCase()}</h1>
+            <h1 className="font-display text-2xl sm:text-4xl leading-tight title-chunky">{p.name.toUpperCase()}</h1>
             <Stars n={p.difficulty} />
           </div>
           <p className="font-bold mt-2">{p.short[lang]}</p>
           <div className="flex flex-wrap gap-2 mt-4">
-            {p.demo && <a className="btn-pixel !bg-terra" href={p.demo} target="_blank" rel="noreferrer">{t('detail.visit')}</a>}
-            {p.repo && <a className="btn-pixel !bg-night" href={p.repo} target="_blank" rel="noreferrer">{t('detail.github')}</a>}
+            {p.demo && <a className="btn-game btn-red" href={p.demo} target="_blank" rel="noreferrer">{t('detail.visit')}</a>}
+            {p.repo && <a className="btn-game btn-night" href={p.repo} target="_blank" rel="noreferrer">{t('detail.github')}</a>}
           </div>
           <div className="grid sm:grid-cols-2 gap-4 mt-6 text-sm font-bold">
             <p className="dialog-rpg !shadow-none p-3">👤 {t('detail.role')}: {p.role[lang]}</p>
             <p className="dialog-rpg !shadow-none p-3">⏱️ {t('detail.duration')}: {p.duration[lang]}</p>
           </div>
 
-          <h2 className="font-pixel text-xs mt-8 text-terra">{t('detail.about')}</h2>
+          <h2 className="font-game text-sm mt-8 text-terra">{t('detail.about')}</h2>
           <p className="font-bold leading-relaxed mt-2">{p.short[lang]}</p>
 
-          <h2 className="font-pixel text-xs mt-8 text-terra">{t('detail.loot')}</h2>
+          <h2 className="font-game text-sm mt-8 text-terra">{t('detail.loot')}</h2>
           <ul className="mt-2 space-y-2 font-bold">
             {p.features.map((f, i) => <li key={i}>⚔ {f[lang]}</li>)}
           </ul>
 
-          <h2 className="font-pixel text-xs mt-8 text-terra">{t('detail.boss')}</h2>
+          <h2 className="font-game text-sm mt-8 text-terra">{t('detail.boss')}</h2>
           <div className="space-y-3 mt-2">
             {p.boss.map((b, i) => (
               <div key={i} className="dialog-rpg !shadow-none p-4">
-                <p className="font-pixel text-[9px]">👹 {b.title[lang]}</p>
+                <p className="font-game text-[9px]">👹 {b.title[lang]}</p>
                 <p className="font-bold text-sm mt-2 leading-relaxed">{b.body[lang]}</p>
               </div>
             ))}
           </div>
 
-          <h2 className="font-pixel text-xs mt-8 text-terra">{t('detail.items')}</h2>
+          <h2 className="font-game text-sm mt-8 text-terra">{t('detail.items')}</h2>
           <p className="mt-3">{p.stack.map(s => <span key={s} className="chip">{s}</span>)}</p>
 
           {(p.testimonials?.length ?? 0) > 0 && (

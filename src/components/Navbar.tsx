@@ -46,21 +46,21 @@ export function Navbar() {
   const nav = (hash: string) => { setOpen(false); setActive(hash); goSection(navigate, pathname, hash) }
 
   return (
-    <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(43,33,24,.35)]">
+    <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(30,37,71,.35)]">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[58px] flex items-center gap-2">
-        <span className={`hidden lg:inline font-pixel text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
-        <button className="font-pixel text-[11px] text-terra shrink-0 hidden min-[400px]:inline-block" onClick={() => nav('')} aria-label="New quest - home">
+        <span className={`hidden lg:inline font-game text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
+        <button className="font-game text-[11px] text-terra shrink-0 hidden min-[400px]:inline-block" onClick={() => nav('')} aria-label="New quest - home">
           NEW QUEST
         </button>
-        <span className={`hidden lg:inline font-pixel text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
-        <button className="font-pixel text-base sm:text-lg shrink-0 ml-1" onClick={() => nav('')}>
+        <span className={`hidden lg:inline font-game text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
+        <button className="font-display text-xl sm:text-2xl shrink-0 ml-1 title-chunky" onClick={() => nav('')}>
           {owner.brand}
         </button>
 
         <nav className="hidden md:flex items-center gap-5 ml-8" aria-label="Utama">
           {LINKS.map(l => (
             <button key={l.key} onClick={() => nav(l.hash)} aria-current={active === l.hash ? true : undefined}
-              className={`font-pixel text-[10px] transition-colors ${active === l.hash ? 'text-terra underline decoration-2 underline-offset-4' : 'hover:text-terra'}`}>
+              className={`font-game text-xs transition-colors ${active === l.hash ? 'text-terra underline decoration-[3px] underline-offset-4' : 'hover:text-terra'}`}>
               {t(l.key as never)}
             </button>
           ))}
@@ -68,36 +68,36 @@ export function Navbar() {
 
         <div className="ml-auto flex items-center gap-2">
           <button onClick={toggleBgm} aria-pressed={bgmOn}
-            className="font-pixel text-[8px] px-2 py-[7px] border-2 border-ink bg-ochre text-ink shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+            className="font-game text-[10px] px-2 py-2 border-[3px] border-ink rounded-[10px] bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
             ♪ {bgmOn ? 'ON' : 'OFF'}
           </button>
           <button onClick={toggleDark} aria-label="Toggle theme"
-            className="w-[30px] h-[30px] border-2 border-ink bg-white dark:bg-night text-sm shadow-[2px_2px_0_var(--color-ink)]">
+            className="w-[34px] h-[34px] border-[3px] border-ink rounded-[10px] bg-white text-base shadow-[2px_2px_0_var(--color-ink)]">
             {dark ? '☀️' : '🌙'}
           </button>
-          <div className="flex border-2 border-ink shadow-[2px_2px_0_var(--color-ink)] overflow-hidden" role="group" aria-label="Language">
+          <div className="flex border-[3px] border-ink rounded-[10px] shadow-[2px_2px_0_var(--color-ink)] overflow-hidden" role="group" aria-label="Language">
             {(['id', 'en'] as const).map(l => (
               <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l}
-                className={`font-pixel text-[8px] px-2 py-[8px] ${lang === l ? 'bg-terra text-white' : 'bg-white dark:bg-night dark:text-parchment'}`}>
+                className={`font-game text-[10px] px-2 py-2 ${lang === l ? 'bg-terra text-white' : 'bg-white text-ink'}`}>
                 {l.toUpperCase()}
               </button>
             ))}
           </div>
-          <Link to="/game" className="btn-pixel !bg-terra hidden sm:inline-block" aria-label="Play mini dungeon">
+          <Link to="/game" className="btn-game btn-red hidden sm:inline-block" aria-label="Play mini dungeon">
             ⚔ {t('nav.game')}
           </Link>
-          <button className="md:hidden border-2 border-ink bg-white dark:bg-night px-2 py-[5px] shadow-[2px_2px_0_var(--color-ink)]"
+          <button className="md:hidden border-[3px] border-ink rounded-[10px] bg-white px-2 py-1 shadow-[2px_2px_0_var(--color-ink)]"
             onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Menu">☰</button>
         </div>
       </div>
       {open && (
         <nav className="md:hidden border-t-[3px] border-ink bg-parchment dark:bg-nightdeep px-4 py-3 flex flex-col gap-3" aria-label="Menu seluler">
           {LINKS.map(l => (
-            <button key={l.key} className={`font-pixel text-[11px] text-left ${active === l.hash ? 'text-terra' : ''}`}
+            <button key={l.key} className={`font-game text-[13px] text-left ${active === l.hash ? 'text-terra' : ''}`}
               onClick={() => nav(l.hash)}>{active === l.hash ? '▶ ' : ''}{t(l.key as never)}</button>
           ))}
-          <Link to="/game" className="font-pixel text-[11px] text-terra" onClick={() => setOpen(false)}>⚔ {t('nav.game')}</Link>
-          <button className="font-pixel text-[11px] text-left" onClick={toggleMuted}>{muted ? '🔇 UNMUTE SFX' : '🔊 MUTE SFX'}</button>
+          <Link to="/game" className="font-game text-[13px] text-terra" onClick={() => setOpen(false)}>⚔ {t('nav.game')}</Link>
+          <button className="font-game text-[13px] text-left" onClick={toggleMuted}>{muted ? '🔇 UNMUTE SFX' : '🔊 MUTE SFX'}</button>
         </nav>
       )}
     </header>
@@ -116,21 +116,21 @@ export function FloatingButtons() {
   return (
     <>
       <button onClick={() => { sfx.pickup(); setGuide(true) }} aria-label={t('guide.open')}
-        className="fixed left-3 bottom-4 z-[60] w-14 h-14 rounded-full bg-terra text-white border-[3px] border-ink shadow-[3px_3px_0_var(--color-ink)] text-2xl anim-floaty">
+        className="fixed left-3 bottom-4 z-[60] w-14 h-14 rounded-full bg-gradient-to-b from-[#ff7a86] to-[#c81e32] text-white border-[3px] border-ink shadow-[3px_3px_0_var(--color-ink)] text-2xl anim-floaty">
         🧚
-        <span className="absolute -top-2 -right-2 bg-ochre text-ink font-pixel text-[7px] px-1 py-[3px] border-2 border-ink">NEW</span>
+        <span className="absolute -top-2 -right-2 bg-ochre text-ink font-game text-[9px] px-1 py-[3px] border-2 border-ink rounded-full">NEW</span>
       </button>
       {guide && (
         <div className="fixed inset-0 z-[70] bg-ink/60 flex items-center justify-center p-4" onClick={() => setGuide(false)}>
           <div className="dialog-rpg max-w-sm w-full p-5" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={t('guide.title')}>
-            <p className="font-pixel text-[11px] mb-3">🧚 {t('guide.title')}</p>
+            <p className="font-game text-[11px] mb-3">🧚 {t('guide.title')}</p>
             <div className="flex flex-col gap-2 font-extrabold">
               <a className="underline" href={wa} target="_blank" rel="noreferrer">💬 WhatsApp — {t('contact.chat')}</a>
               <a className="underline" href={`mailto:${owner.email}`}>✉️ {owner.email}</a>
               <a className="underline" href={owner.github} target="_blank" rel="noreferrer">🐙 GitHub — {t('contact.repos')}</a>
               <a className="underline" href={owner.linkedin} target="_blank" rel="noreferrer">💼 LinkedIn — {t('contact.follow')}</a>
             </div>
-            <button className="btn-pixel !bg-night mt-4" onClick={() => setGuide(false)}>{t('contact.close')}</button>
+            <button className="btn-game btn-night mt-4" onClick={() => setGuide(false)}>{t('contact.close')}</button>
           </div>
         </div>
       )}
