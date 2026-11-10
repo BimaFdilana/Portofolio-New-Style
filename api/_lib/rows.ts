@@ -7,7 +7,7 @@ export const TABLES: Record<string, string[]> = {
   certificates: ['title_id', 'title_en', 'issuer', 'year', 'pages', 'sort'],
   skill_categories: ['icon', 'title_id', 'title_en', 'items', 'sort'],
   journey: ['period', 'title_id', 'title_en', 'body_id', 'body_en', 'active', 'sort'],
-  testimonials: ['project_slug', 'name', 'role', 'text_id', 'text_en', 'rating', 'sort', 'published'],
+  testimonials: ['project_slug', 'name', 'role', 'text_id', 'text_en', 'rating', 'sort', 'published', 'photo'],
 }
 
 export const JSON_COLS = ['stack', 'features', 'boss', 'items']

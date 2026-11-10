@@ -167,7 +167,7 @@ export function JourneyAdmin() {
 }
 
 /* ---------------- TESTIMONI ---------------- */
-interface TestimonialRow { id: string; project_slug: string; name: string; role: string; text_id: string; text_en: string; rating: number; sort: number; published: boolean }
+interface TestimonialRow { id: string; project_slug: string; name: string; role: string; text_id: string; text_en: string; rating: number; sort: number; published: boolean; photo: string }
 export function TestimonialsAdmin() {
   const { rows, load } = useTable<TestimonialRow>('testimonials')
   const [projects, setProjects] = useState<{ slug: string; name: string }[]>([])
@@ -185,7 +185,7 @@ export function TestimonialsAdmin() {
   const projectName = (slug: string) => projects.find(p => p.slug === slug)?.name ?? slug
   return (
     <div>
-      <PageHead title="Testimoni Proyek" onAdd={() => setForm({ project_slug: projects[0]?.slug ?? '', name: '', role: '', text_id: '', text_en: '', rating: 5, sort: rows.length + 1, published: true })} />
+      <PageHead title="Testimoni Proyek" onAdd={() => setForm({ project_slug: projects[0]?.slug ?? '', name: '', role: '', text_id: '', text_en: '', rating: 5, sort: rows.length + 1, published: true, photo: '' })} />
       {msg && <div className="mt-4"><Notice kind="ok">{msg}</Notice></div>}
       {!form ? (
         <div className="bg-white border border-gray-200 rounded-lg mt-5 divide-y divide-gray-100">
@@ -218,6 +218,13 @@ export function TestimonialsAdmin() {
           </div>
           <BiField label="Isi ulasan" textarea idVal={form.text_id ?? ''} enVal={form.text_en ?? ''}
             onId={v => setForm({ ...form, text_id: v })} onEn={v => setForm({ ...form, text_en: v })} />
+          <Field label="URL Foto (opsional)">
+            <div className="flex items-center gap-3">
+              {form.photo ? <img src={form.photo} alt="" className="w-10 h-10 rounded-full object-cover border border-gray-300 shrink-0" /> : null}
+              <input className={inputCls} value={form.photo ?? ''} onChange={e => setForm({ ...form, photo: e.target.value })} placeholder="https://…/foto.jpg" />
+            </div>
+            <span className="text-xs text-gray-400">Kosongkan bila tidak ada foto — kartu menampilkan lingkaran inisial nama.</span>
+          </Field>
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" checked={form.published ?? true} onChange={e => setForm({ ...form, published: e.target.checked })} /> Tampilkan di situs (testimoni tersembunyi tidak tampil di halaman detail)
           </label>

@@ -19,6 +19,7 @@ export default withApi(async (req: VercelRequest, res: VercelResponse) => {
       role: r.role,
       text: bi(r, 'text'),
       rating: Math.min(5, Math.max(1, Number(r.rating ?? 5))),
+      photo: String(r.photo ?? ''),
     })
     testimonialsByProject.set(slug, list)
   }

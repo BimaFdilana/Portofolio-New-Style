@@ -69,7 +69,8 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS journey (
 $pdo->exec("CREATE TABLE IF NOT EXISTS testimonials (
   id INTEGER PRIMARY KEY AUTOINCREMENT, project_slug TEXT NOT NULL DEFAULT '', name TEXT NOT NULL DEFAULT '',
   role TEXT NOT NULL DEFAULT '', text_id TEXT NOT NULL DEFAULT '', text_en TEXT NOT NULL DEFAULT '',
-  rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1)");
+  rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1,
+  photo TEXT NOT NULL DEFAULT '')");
 $pdo->exec("CREATE TABLE IF NOT EXISTS site_settings (id INTEGER PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}')");
 
 // ---------- Seed (sekali, saat tabel masih kosong) ----------
@@ -78,7 +79,7 @@ $TABLES = [
     'certificates' => ['title_id','title_en','issuer','year','pages','sort'],
     'skill_categories' => ['icon','title_id','title_en','items','sort'],
     'journey' => ['period','title_id','title_en','body_id','body_en','active','sort'],
-    'testimonials' => ['project_slug','name','role','text_id','text_en','rating','sort','published'],
+    'testimonials' => ['project_slug','name','role','text_id','text_en','rating','sort','published','photo'],
 ];
 $JSON_COLS = ['stack','features','boss','items'];
 $INT_COLS = ['difficulty','year','pages','sort','published','active','rating'];
@@ -128,6 +129,14 @@ function seedTestimonialsIfEmpty(PDO $pdo, array $TABLES): void {
     }
 }
 seedTestimonialsIfEmpty($pdo, $TABLES);
+
+// Migrasi ringan: tabel testimonials yang dibuat sebelum kolom photo ada
+// perlu ditambah kolomnya — CREATE TABLE IF NOT EXISTS tidak mengubah
+// tabel yang sudah ada.
+$hasPhoto = (int)$pdo->query("SELECT COUNT(*) FROM pragma_table_info('testimonials') WHERE name = 'photo'")->fetchColumn();
+if ($hasPhoto === 0) {
+    $pdo->exec("ALTER TABLE testimonials ADD COLUMN photo TEXT NOT NULL DEFAULT ''");
+}
 
 // ---------- Bootstrap akun admin dari config ----------
 if (!empty($config['admin_email']) && !empty($config['admin_password'])) {
@@ -199,6 +208,7 @@ if ($route === 'content' && $method === 'GET') {
         $byProject[$r['project_slug']][] = [
             'name' => $r['name'], 'role' => $r['role'], 'text' => $bi($r, 'text'),
             'rating' => min(5, max(1, (int)($r['rating'] ?? 5))),
+            'photo' => $r['photo'] ?? '',
         ];
     }
     $projects = [];

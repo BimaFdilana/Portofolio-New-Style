@@ -47,6 +47,8 @@ export const skillCategories: SkillCategory[] = [
 
 export interface Testimonial {
   name: string; role: string; text: Bi; rating: 1 | 2 | 3 | 4 | 5
+  /** URL foto pemberi ulasan (opsional) — kosong = tampil inisial nama. */
+  photo?: string
 }
 
 export interface Project {

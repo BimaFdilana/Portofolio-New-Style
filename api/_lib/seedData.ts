@@ -383,7 +383,8 @@ export const SEED: SeedData = {
       "text_en": "Compiling LKPM reports used to take days. Now the priority scores are visible at a glance — we just call the most urgent companies.",
       "rating": 5,
       "sort": 1,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "lkpm-monitor",
@@ -393,7 +394,8 @@ export const SEED: SeedData = {
       "text_en": "The interface is easy to use, even for staff who are not used to computers.",
       "rating": 5,
       "sort": 2,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "lkpm-monitor",
@@ -403,7 +405,8 @@ export const SEED: SeedData = {
       "text_en": "OSS data imports that used to duplicate are now clean. Quarterly reports finish much faster.",
       "rating": 4,
       "sort": 3,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "lkpm-monitor",
@@ -413,7 +416,8 @@ export const SEED: SeedData = {
       "text_en": "Every company follow-up is recorded, so nothing slips through.",
       "rating": 5,
       "sort": 4,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "lkpm-monitor",
@@ -423,7 +427,8 @@ export const SEED: SeedData = {
       "text_en": "The quarterly dashboard helps us see achievements compared to last year.",
       "rating": 4,
       "sort": 5,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "rumah-cahaya",
@@ -433,7 +438,8 @@ export const SEED: SeedData = {
       "text_en": "The QRIS checkout is easy — my child could play the MiniApp right after purchase.",
       "rating": 5,
       "sort": 1,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "rumah-cahaya",
@@ -443,7 +449,8 @@ export const SEED: SeedData = {
       "text_en": "The ebooks are engaging, the illustrations are bright and the language is easy for children to understand.",
       "rating": 5,
       "sort": 2,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "rumah-cahaya",
@@ -453,7 +460,8 @@ export const SEED: SeedData = {
       "text_en": "The order was processed quickly and the redeem code arrived straight on WhatsApp.",
       "rating": 4,
       "sort": 3,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "rumah-cahaya",
@@ -463,7 +471,8 @@ export const SEED: SeedData = {
       "text_en": "The promo page is clear — the special price is visible right away.",
       "rating": 5,
       "sort": 4,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "oss-scraper",
@@ -473,7 +482,8 @@ export const SEED: SeedData = {
       "text_en": "NIB data that used to be searched manually one by one can now just be exported to Excel.",
       "rating": 5,
       "sort": 1,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "oss-scraper",
@@ -483,7 +493,8 @@ export const SEED: SeedData = {
       "text_en": "Login and OTP run automatically — no need to babysit them.",
       "rating": 4,
       "sort": 2,
-      "published": 1
+      "published": 1,
+      "photo": ""
     },
     {
       "project_slug": "oss-scraper",
@@ -493,7 +504,8 @@ export const SEED: SeedData = {
       "text_en": "The weekly reports we need are prepared much faster now.",
       "rating": 5,
       "sort": 3,
-      "published": 1
+      "published": 1,
+      "photo": ""
     }
   ],
   "settings": {

@@ -47,7 +47,8 @@ const SCHEMA: string[] = [
   `CREATE TABLE IF NOT EXISTS testimonials (
     id INTEGER PRIMARY KEY AUTOINCREMENT, project_slug TEXT NOT NULL DEFAULT '', name TEXT NOT NULL DEFAULT '',
     role TEXT NOT NULL DEFAULT '', text_id TEXT NOT NULL DEFAULT '', text_en TEXT NOT NULL DEFAULT '',
-    rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1)`,
+    rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1,
+    photo TEXT NOT NULL DEFAULT '')`,
   'CREATE TABLE IF NOT EXISTS site_settings (id INTEGER PRIMARY KEY, data TEXT NOT NULL DEFAULT \'{}\')',
 ]
 
@@ -92,6 +93,16 @@ async function init(): Promise<void> {
       })
       await db.execute({ sql, args })
     }
+  }
+
+  // Migrasi ringan: tabel testimonials yang dibuat sebelum kolom photo ada
+  // (deploy 10 Nov) perlu ditambah kolomnya — CREATE TABLE IF NOT EXISTS
+  // tidak mengubah tabel yang sudah ada.
+  const hasPhoto = await db.execute(
+    "SELECT COUNT(*) AS n FROM pragma_table_info('testimonials') WHERE name = 'photo'",
+  )
+  if (Number(hasPhoto.rows[0]?.n ?? 0) === 0) {
+    await db.execute("ALTER TABLE testimonials ADD COLUMN photo TEXT NOT NULL DEFAULT ''")
   }
 
   // Bootstrap akun admin dari env (hanya saat tabel admins masih kosong).

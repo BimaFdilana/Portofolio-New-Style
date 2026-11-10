@@ -6,6 +6,28 @@ import { Footer } from '../components/Sections'
 import { Stars } from '../components/ui'
 import type { Testimonial } from '../data/content'
 
+/** Foto pemberi ulasan — gambar bila ada, kalau tidak lingkaran inisial nama. */
+const AVATAR_COLORS = [
+  ['#5f7f52', '#fff8e7'],
+  ['#b5533c', '#fff8e7'],
+  ['#c9a227', '#2b2118'],
+  ['#4e7396', '#fff8e7'],
+  ['#c4554d', '#fff8e7'],
+] as const
+function Avatar({ name, photo }: { name: string; photo?: string }) {
+  if (photo) {
+    return <img src={photo} alt={`Foto ${name}`} className="w-12 h-12 rounded-full object-cover border-2 border-ink shrink-0 shadow-[2px_2px_0_var(--color-ink)]" />
+  }
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?'
+  const hash = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
+  const [bg, fg] = AVATAR_COLORS[hash % AVATAR_COLORS.length]
+  return (
+    <span aria-hidden className="w-12 h-12 rounded-full border-2 border-ink shrink-0 shadow-[2px_2px_0_var(--color-ink)] flex items-center justify-center font-pixel text-[11px]" style={{ background: bg, color: fg }}>
+      {initials}
+    </span>
+  )
+}
+
 /** Slider horizontal ulasan — kartu berdampingan, digeser (bukan ditumpuk ke bawah). */
 function TestimonialsSlider({ items, lang }: { items: Testimonial[]; lang: 'id' | 'en' }) {
   const { t } = useApp()
@@ -53,15 +75,17 @@ function TestimonialsSlider({ items, lang }: { items: Testimonial[]; lang: 'id' 
       >
         {items.map((item, i) => (
           <figure key={i} className="dialog-rpg !shadow-none p-4 snap-start shrink-0 w-[78vw] max-w-[320px] sm:w-[320px] flex flex-col">
-            <span className="text-terra text-2xl leading-none" aria-hidden>❝</span>
-            <blockquote className="font-bold text-sm leading-relaxed mt-1 flex-1">“{item.text[lang]}”</blockquote>
+            <div className="flex items-center gap-3">
+              <Avatar name={item.name} photo={item.photo} />
+              <figcaption className="min-w-0">
+                <p className="font-pixel text-[10px] leading-relaxed">{item.name}</p>
+                <p className="text-xs font-bold text-ink/60 dark:text-white/60 mt-1">{item.role}</p>
+              </figcaption>
+            </div>
             <span className="text-ochre tracking-[2px] mt-3" aria-label={`rating ${item.rating}/5`}>
               {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
             </span>
-            <figcaption className="mt-2">
-              <p className="font-pixel text-[10px]">{item.name}</p>
-              <p className="text-xs font-bold text-ink/60 dark:text-white/60 mt-1">{item.role}</p>
-            </figcaption>
+            <blockquote className="font-bold text-sm leading-relaxed mt-2 flex-1">“{item.text[lang]}”</blockquote>
           </figure>
         ))}
       </div>
