@@ -45,11 +45,17 @@ export const skillCategories: SkillCategory[] = [
     levels: [80, 78, 84, 88] },
 ]
 
+export interface Testimonial {
+  name: string; role: string; text: Bi; rating: 1 | 2 | 3 | 4 | 5
+}
+
 export interface Project {
   slug: string; name: string; difficulty: 1 | 2 | 3; grad: string; hue: string
   short: Bi; role: Bi; duration: Bi; stack: string[]
   features: Bi[]; boss: { title: Bi; body: Bi }[]; featuresLong?: Bi
   demo?: string; repo?: string
+  /** Ulasan dari pengguna/klien proyek — tampil sebagai slider horizontal di halaman detail. */
+  testimonials?: Testimonial[]
 }
 const B = (id: string, en: string): Bi => ({ id, en })
 
@@ -74,6 +80,23 @@ export const projects: Project[] = [
         body: B('Antarmuka disederhanakan: kartu info anti salah-info dan alur impor terpandu langkah demi langkah.', 'Simplified UI: mistake-proof info cards and a guided step-by-step import flow.') },
     ],
     demo: '', repo: 'https://github.com/BimaFdilana/Lkpm-Sistem',
+    testimonials: [
+      { name: 'Sari', role: 'PIC LKPM — DPMPTSP', rating: 5,
+        text: B('Dulu rekap LKPM makan waktu berhari-hari. Sekarang skor prioritasnya langsung kelihatan, kami tinggal hubungi perusahaan yang paling mendesak.',
+                'Compiling LKPM reports used to take days. Now the priority scores are visible at a glance — we just call the most urgent companies.') },
+      { name: 'Budi', role: 'Staf DPMPTSP', rating: 5,
+        text: B('Tampilannya gampang dipakai, bahkan untuk staf yang tidak terbiasa dengan komputer.',
+                'The interface is easy to use, even for staff who are not used to computers.') },
+      { name: 'Dewi', role: 'Kabid — DPMPTSP', rating: 4,
+        text: B('Impor data OSS yang dulu sering dobel sekarang rapi. Laporan triwulan jadi lebih cepat selesai.',
+                'OSS data imports that used to duplicate are now clean. Quarterly reports finish much faster.') },
+      { name: 'Agus', role: 'PIC LKPM — DPMPTSP', rating: 5,
+        text: B('Follow-up perusahaan tercatat semua, jadi tidak ada yang terlewat.',
+                'Every company follow-up is recorded, so nothing slips through.') },
+      { name: 'Maya', role: 'Staf DPMPTSP', rating: 4,
+        text: B('Dashboard per triwulannya membantu kami melihat capaian dibanding tahun lalu.',
+                'The quarterly dashboard helps us see achievements compared to last year.') },
+    ],
   },
   {
     slug: 'rumah-cahaya', name: 'Rumah Cahaya-bks', difficulty: 2, grad: 'linear-gradient(135deg,#d9a7b8,#b5533c)', hue: 'EBOOK',
@@ -93,6 +116,20 @@ export const projects: Project[] = [
         body: B('Entitlement memakai install token per perangkat agar MiniApp tetap bisa dibuka dari Home Screen iOS.', 'Entitlement via per-device install tokens so MiniApps open straight from the iOS Home Screen.') },
     ],
     demo: 'https://rumahcahaya.web.id', repo: 'https://github.com/BimaFdilana/Teman-Bermain',
+    testimonials: [
+      { name: 'Rina', role: 'Orang tua', rating: 5,
+        text: B('Checkout QRIS-nya mudah, anak saya langsung bisa main MiniApp-nya setelah beli.',
+                'The QRIS checkout is easy — my child could play the MiniApp right after purchase.') },
+      { name: 'Fitri', role: 'Guru PAUD', rating: 5,
+        text: B('Ebook-nya menarik, gambarnya cerah dan bahasanya mudah dipahami anak.',
+                'The ebooks are engaging, the illustrations are bright and the language is easy for children to understand.') },
+      { name: 'Dedi', role: 'Pembeli', rating: 4,
+        text: B('Pesanannya cepat diproses, kode redeem langsung dikirim ke WhatsApp.',
+                'The order was processed quickly and the redeem code arrived straight on WhatsApp.') },
+      { name: 'Sinta', role: 'Pembeli', rating: 5,
+        text: B('Halaman promonya jelas, harga spesialnya langsung kelihatan.',
+                'The promo page is clear — the special price is visible right away.') },
+    ],
   },
   {
     slug: 'oss-scraper', name: 'OSS Data Scraper', difficulty: 2, grad: 'linear-gradient(135deg,#a7c4a0,#5f7f52)', hue: 'AUTO',
@@ -111,6 +148,17 @@ export const projects: Project[] = [
         body: B('Selector dibuat tangguh dengan fallback berlapis dan retry cerdas.', 'Resilient selectors with layered fallbacks and smart retries.') },
     ],
     demo: '', repo: '',
+    testimonials: [
+      { name: 'Hadi', role: 'Staf Administrasi', rating: 5,
+        text: B('Data NIB yang tadinya dicari manual satu-satu sekarang tinggal ekspor ke Excel.',
+                'NIB data that used to be searched manually one by one can now just be exported to Excel.') },
+      { name: 'Lina', role: 'Operator Data', rating: 4,
+        text: B('Login dan OTP-nya jalan otomatis, tidak perlu ditunggui.',
+                'Login and OTP run automatically — no need to babysit them.') },
+      { name: 'Rudi', role: 'Analis Data', rating: 5,
+        text: B('Laporan yang kami butuhkan setiap minggu jadi jauh lebih cepat disiapkan.',
+                'The weekly reports we need are prepared much faster now.') },
+    ],
   },
 ]
 

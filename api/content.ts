@@ -8,6 +8,21 @@ export default withApi(async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== 'GET') return methodNotAllowed(res)
   const db = getClient()
 
+  const testimonialsByProject = new Map<string, unknown[]>()
+  const tr = await db.execute('SELECT * FROM testimonials WHERE published = 1 ORDER BY sort, id')
+  for (const raw of tr.rows as Row[]) {
+    const r = decodeRow(raw)
+    const slug = String(r.project_slug ?? '')
+    const list = testimonialsByProject.get(slug) ?? []
+    list.push({
+      name: r.name,
+      role: r.role,
+      text: bi(r, 'text'),
+      rating: Math.min(5, Math.max(1, Number(r.rating ?? 5))),
+    })
+    testimonialsByProject.set(slug, list)
+  }
+
   const projects: unknown[] = []
   const pr = await db.execute('SELECT * FROM projects WHERE published = 1 ORDER BY sort, id')
   for (const raw of pr.rows as Row[]) {
@@ -26,6 +41,7 @@ export default withApi(async (req: VercelRequest, res: VercelResponse) => {
       boss: r.boss,
       demo: r.demo,
       repo: r.repo,
+      testimonials: testimonialsByProject.get(String(r.slug)) ?? [],
     })
   }
 

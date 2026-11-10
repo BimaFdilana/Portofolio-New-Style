@@ -95,7 +95,7 @@ CRUD, settings, logout, rute salah). Simpan harness di luar repo bila perlu.
 - Rute API: `GET /api/content` (publik), `POST /api/login|logout`,
   CRUD `GET/POST /api/{tabel}`, `PUT/DELETE /api/{tabel}/{id}`,
   `GET/PUT /api/settings`. Tabel: projects, certificates,
-  skill_categories, journey.
+  skill_categories, journey, testimonials.
 
 ## Alternatif: hosting PHP sendiri (cPanel)
 

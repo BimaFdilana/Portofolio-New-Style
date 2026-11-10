@@ -166,6 +166,68 @@ export function JourneyAdmin() {
   )
 }
 
+/* ---------------- TESTIMONI ---------------- */
+interface TestimonialRow { id: string; project_slug: string; name: string; role: string; text_id: string; text_en: string; rating: number; sort: number; published: boolean }
+export function TestimonialsAdmin() {
+  const { rows, load } = useTable<TestimonialRow>('testimonials')
+  const [projects, setProjects] = useState<{ slug: string; name: string }[]>([])
+  useEffect(() => { api.list<{ slug: string; name: string }>('projects').then(setProjects).catch(() => {}) }, [])
+  const [form, setForm] = useState<Partial<TestimonialRow> | null>(null)
+  const [msg, setMsg] = useState('')
+  const save = async () => {
+    if (!form) return
+    const { id, ...payload } = form
+    if (!payload.project_slug || !payload.name) { setMsg('Pilih proyek & isi nama pemberi ulasan.'); return }
+    try { if (id) await api.update('testimonials', id, payload); else await api.insert('testimonials', payload) }
+    catch (ex) { setMsg('Gagal: ' + (ex instanceof Error ? ex.message : '')); return }
+    setMsg('Testimoni tersimpan.'); setForm(null); load()
+  }
+  const projectName = (slug: string) => projects.find(p => p.slug === slug)?.name ?? slug
+  return (
+    <div>
+      <PageHead title="Testimoni Proyek" onAdd={() => setForm({ project_slug: projects[0]?.slug ?? '', name: '', role: '', text_id: '', text_en: '', rating: 5, sort: rows.length + 1, published: true })} />
+      {msg && <div className="mt-4"><Notice kind="ok">{msg}</Notice></div>}
+      {!form ? (
+        <div className="bg-white border border-gray-200 rounded-lg mt-5 divide-y divide-gray-100">
+          {rows.map(r => (
+            <div key={r.id} className="flex items-center gap-3 px-4 py-3 flex-wrap">
+              <p className="font-medium text-gray-900 flex-1 min-w-[220px]">
+                {r.name} <span className="text-gray-400 font-normal">· {projectName(r.project_slug)} · {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                {!r.published && <span className="text-amber-600 text-xs font-bold"> TERSEMBUNYI</span>}
+              </p>
+              <button className={btnGhost} onClick={() => setForm(r)}>Ubah</button>
+              <button className={btnDanger} onClick={async () => { await api.remove('testimonials', r.id); load() }}>Hapus</button>
+            </div>
+          ))}
+          {rows.length === 0 && <p className="px-4 py-6 text-sm text-gray-500">Belum ada testimoni. Tambahkan ulasan untuk salah satu proyek.</p>}
+        </div>
+      ) : (
+        <div className="bg-white border border-gray-200 rounded-lg mt-5 p-5 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Field label="Proyek">
+              <select className={inputCls} value={form.project_slug ?? ''} onChange={e => setForm({ ...form, project_slug: e.target.value })}>
+                {projects.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
+              </select>
+            </Field>
+            <Field label="Urutan"><input className={inputCls} type="number" value={form.sort ?? 0} onChange={e => setForm({ ...form, sort: Number(e.target.value) })} /></Field>
+          </div>
+          <div className="grid sm:grid-cols-[1fr_1fr_120px] gap-3">
+            <Field label="Nama pemberi ulasan"><input className={inputCls} value={form.name ?? ''} onChange={e => setForm({ ...form, name: e.target.value })} /></Field>
+            <Field label="Peran / jabatan"><input className={inputCls} value={form.role ?? ''} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="mis. PIC LKPM — DPMPTSP" /></Field>
+            <Field label="Bintang (1–5)"><input className={inputCls} type="number" min={1} max={5} value={form.rating ?? 5} onChange={e => setForm({ ...form, rating: Math.min(5, Math.max(1, Number(e.target.value))) })} /></Field>
+          </div>
+          <BiField label="Isi ulasan" textarea idVal={form.text_id ?? ''} enVal={form.text_en ?? ''}
+            onId={v => setForm({ ...form, text_id: v })} onEn={v => setForm({ ...form, text_en: v })} />
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" checked={form.published ?? true} onChange={e => setForm({ ...form, published: e.target.checked })} /> Tampilkan di situs (testimoni tersembunyi tidak tampil di halaman detail)
+          </label>
+          <div className="flex gap-2"><button className={btnPrimary} onClick={save}>Simpan</button><button className={btnGhost} onClick={() => setForm(null)}>Batal</button></div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ---------------- PENGATURAN SITUS ---------------- */
 const SETTING_FIELDS: { key: string; label: string; hint?: string }[] = [
   { key: 'name', label: 'Nama lengkap' },

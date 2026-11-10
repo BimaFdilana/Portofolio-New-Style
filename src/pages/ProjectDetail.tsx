@@ -1,9 +1,73 @@
 import { Link, useParams } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../lib/store'
 import { useContent } from '../lib/content'
 import { Footer } from '../components/Sections'
 import { Stars } from '../components/ui'
+import type { Testimonial } from '../data/content'
+
+/** Slider horizontal ulasan — kartu berdampingan, digeser (bukan ditumpuk ke bawah). */
+function TestimonialsSlider({ items, lang }: { items: Testimonial[]; lang: 'id' | 'en' }) {
+  const { t } = useApp()
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [atStart, setAtStart] = useState(true)
+  const [atEnd, setAtEnd] = useState(false)
+  const updateEnds = () => {
+    const el = trackRef.current
+    if (!el) return
+    setAtStart(el.scrollLeft <= 4)
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4)
+  }
+  useEffect(() => {
+    updateEnds()
+    window.addEventListener('resize', updateEnds)
+    return () => window.removeEventListener('resize', updateEnds)
+  }, [])
+  const slide = (dir: 1 | -1) => {
+    const el = trackRef.current
+    if (!el) return
+    const card = el.querySelector<HTMLElement>(':scope > *')
+    const step = (card ? card.offsetWidth + 16 : 320)
+    el.scrollBy({ left: dir * step, behavior: 'smooth' })
+  }
+  const arrowCls = (disabled: boolean) =>
+    `font-pixel text-[10px] border-2 border-ink px-2 py-[6px] shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${
+      disabled ? 'bg-white/60 text-ink/30 dark:bg-night dark:text-white/30' : 'bg-ochre text-ink'
+    }`
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-pixel text-xs text-terra">{t('detail.testimonials')}</h2>
+        <div className="flex gap-2 shrink-0">
+          <button className={arrowCls(atStart)} disabled={atStart} onClick={() => slide(-1)} aria-label={t('detail.testiPrev')}>◀</button>
+          <button className={arrowCls(atEnd)} disabled={atEnd} onClick={() => slide(1)} aria-label={t('detail.testiNext')}>▶</button>
+        </div>
+      </div>
+      <p className="text-xs font-bold text-ink/60 dark:text-white/60 mt-1">{t('detail.testimonialsHint')}</p>
+      <div
+        ref={trackRef}
+        onScroll={updateEnds}
+        className="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory mt-3 pb-2 -mx-1 px-1"
+        role="region"
+        aria-label={t('detail.testimonials')}
+      >
+        {items.map((item, i) => (
+          <figure key={i} className="dialog-rpg !shadow-none p-4 snap-start shrink-0 w-[78vw] max-w-[320px] sm:w-[320px] flex flex-col">
+            <span className="text-terra text-2xl leading-none" aria-hidden>❝</span>
+            <blockquote className="font-bold text-sm leading-relaxed mt-1 flex-1">“{item.text[lang]}”</blockquote>
+            <span className="text-ochre tracking-[2px] mt-3" aria-label={`rating ${item.rating}/5`}>
+              {'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}
+            </span>
+            <figcaption className="mt-2">
+              <p className="font-pixel text-[10px]">{item.name}</p>
+              <p className="text-xs font-bold text-ink/60 dark:text-white/60 mt-1">{item.role}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function ProjectDetail() {
   const { slug } = useParams()
@@ -71,6 +135,12 @@ export function ProjectDetail() {
 
           <h2 className="font-pixel text-xs mt-8 text-terra">{t('detail.items')}</h2>
           <p className="mt-3">{p.stack.map(s => <span key={s} className="chip">{s}</span>)}</p>
+
+          {(p.testimonials?.length ?? 0) > 0 && (
+            <div className="mt-8">
+              <TestimonialsSlider items={p.testimonials ?? []} lang={lang} />
+            </div>
+          )}
         </div>
       </main>
       <Footer />

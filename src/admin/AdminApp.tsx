@@ -3,7 +3,7 @@ import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import { api, apiAvailable } from './api'
 import { btnPrimary, Field, inputCls, Notice } from './ui'
 import { ProjectsAdmin } from './ProjectsAdmin'
-import { CertificatesAdmin, JourneyAdmin, SettingsAdmin, SkillsAdmin } from './SimpleAdmin'
+import { CertificatesAdmin, JourneyAdmin, SettingsAdmin, SkillsAdmin, TestimonialsAdmin } from './SimpleAdmin'
 
 function Login({ onDone }: { onDone: () => void }) {
   const [email, setEmail] = useState('')
@@ -43,7 +43,7 @@ function Login({ onDone }: { onDone: () => void }) {
 function Dashboard() {
   const [counts, setCounts] = useState<Record<string, number | string>>({})
   useEffect(() => {
-    const tables = ['projects', 'certificates', 'skill_categories', 'journey']
+    const tables = ['projects', 'certificates', 'skill_categories', 'journey', 'testimonials']
     tables.forEach(async tb => {
       try {
         const rows = await api.list(tb)
@@ -55,6 +55,7 @@ function Dashboard() {
   }, [])
   const cards = [
     { to: '/admin/projects', label: 'Proyek (Dungeons)', table: 'projects', desc: 'Tambah, ubah, hapus proyek yang tampil di situs.' },
+    { to: '/admin/testimonials', label: 'Testimoni Proyek', table: 'testimonials', desc: 'Ulasan pengguna/klien per proyek — tampil sebagai slider di halaman detail.' },
     { to: '/admin/certificates', label: 'Sertifikat (Relics)', table: 'certificates', desc: 'Kelola daftar sertifikat.' },
     { to: '/admin/skills', label: 'Keahlian (Inventory)', table: 'skill_categories', desc: 'Kategori skill beserta levelnya.' },
     { to: '/admin/journey', label: 'Perjalanan (Adventure Log)', table: 'journey', desc: 'Riwayat karier di halaman utama.' },
@@ -82,6 +83,7 @@ function Dashboard() {
 const NAV = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/projects', label: 'Proyek', end: false },
+  { to: '/admin/testimonials', label: 'Testimoni', end: false },
   { to: '/admin/certificates', label: 'Sertifikat', end: false },
   { to: '/admin/skills', label: 'Keahlian', end: false },
   { to: '/admin/journey', label: 'Perjalanan', end: false },
@@ -111,6 +113,7 @@ function Layout({ onLogout }: { onLogout: () => void }) {
         <Routes>
           <Route index element={<Dashboard />} />
           <Route path="projects" element={<ProjectsAdmin />} />
+          <Route path="testimonials" element={<TestimonialsAdmin />} />
           <Route path="certificates" element={<CertificatesAdmin />} />
           <Route path="skills" element={<SkillsAdmin />} />
           <Route path="journey" element={<JourneyAdmin />} />

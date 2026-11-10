@@ -10,7 +10,7 @@
 //   PUT    /api.php/{tabel}/{id}       (Bearer) ubah
 //   DELETE /api.php/{tabel}/{id}       (Bearer) hapus
 //   GET    /api.php/settings           (Bearer) / PUT /api.php/settings
-// Tabel: projects, certificates, skill_categories, journey
+// Tabel: projects, certificates, skill_categories, journey, testimonials
 // ============================================================
 
 declare(strict_types=1);
@@ -66,6 +66,10 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS journey (
   id INTEGER PRIMARY KEY AUTOINCREMENT, period TEXT NOT NULL DEFAULT '', title_id TEXT NOT NULL DEFAULT '',
   title_en TEXT NOT NULL DEFAULT '', body_id TEXT NOT NULL DEFAULT '', body_en TEXT NOT NULL DEFAULT '',
   active INTEGER NOT NULL DEFAULT 0, sort INTEGER NOT NULL DEFAULT 0)");
+$pdo->exec("CREATE TABLE IF NOT EXISTS testimonials (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, project_slug TEXT NOT NULL DEFAULT '', name TEXT NOT NULL DEFAULT '',
+  role TEXT NOT NULL DEFAULT '', text_id TEXT NOT NULL DEFAULT '', text_en TEXT NOT NULL DEFAULT '',
+  rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1)");
 $pdo->exec("CREATE TABLE IF NOT EXISTS site_settings (id INTEGER PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}')");
 
 // ---------- Seed (sekali, saat tabel masih kosong) ----------
@@ -74,9 +78,10 @@ $TABLES = [
     'certificates' => ['title_id','title_en','issuer','year','pages','sort'],
     'skill_categories' => ['icon','title_id','title_en','items','sort'],
     'journey' => ['period','title_id','title_en','body_id','body_en','active','sort'],
+    'testimonials' => ['project_slug','name','role','text_id','text_en','rating','sort','published'],
 ];
 $JSON_COLS = ['stack','features','boss','items'];
-$INT_COLS = ['difficulty','year','pages','sort','published','active'];
+$INT_COLS = ['difficulty','year','pages','sort','published','active','rating'];
 
 function seedIfEmpty(PDO $pdo, array $TABLES): void {
     $count = (int)$pdo->query("SELECT COUNT(*) FROM projects")->fetchColumn();
@@ -102,6 +107,27 @@ function seedIfEmpty(PDO $pdo, array $TABLES): void {
     }
 }
 seedIfEmpty($pdo, $TABLES);
+
+// Seed testimoni secara mandiri (tidak ikut gerbang projects di atas):
+// DB yang sudah berisi proyek tidak akan menjalankan blok seed di atas.
+function seedTestimonialsIfEmpty(PDO $pdo, array $TABLES): void {
+    $tcount = (int)$pdo->query("SELECT COUNT(*) FROM testimonials")->fetchColumn();
+    $seedFile = __DIR__ . '/seed.json';
+    if ($tcount > 0 || !is_file($seedFile)) return;
+    $seed = json_decode((string)file_get_contents($seedFile), true);
+    if (!is_array($seed) || !isset($seed['testimonials'])) return;
+    $cols = $TABLES['testimonials'];
+    $stmt = $pdo->prepare("INSERT INTO testimonials (" . implode(',', $cols) . ") VALUES (" . implode(',', array_fill(0, count($cols), '?')) . ")");
+    foreach ($seed['testimonials'] as $row) {
+        $vals = [];
+        foreach ($cols as $c) {
+            $v = $row[$c] ?? null;
+            $vals[] = is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v;
+        }
+        $stmt->execute($vals);
+    }
+}
+seedTestimonialsIfEmpty($pdo, $TABLES);
 
 // ---------- Bootstrap akun admin dari config ----------
 if (!empty($config['admin_email']) && !empty($config['admin_password'])) {
@@ -168,6 +194,13 @@ $route = $seg[0] ?? '';
 // ----- Konten publik -----
 if ($route === 'content' && $method === 'GET') {
     $bi = fn($r, $k) => ['id' => $r[$k . '_id'] ?? '', 'en' => $r[$k . '_en'] ?? ''];
+    $byProject = [];
+    foreach ($pdo->query("SELECT * FROM testimonials WHERE published = 1 ORDER BY sort, id") as $r) {
+        $byProject[$r['project_slug']][] = [
+            'name' => $r['name'], 'role' => $r['role'], 'text' => $bi($r, 'text'),
+            'rating' => min(5, max(1, (int)($r['rating'] ?? 5))),
+        ];
+    }
     $projects = [];
     foreach ($pdo->query("SELECT * FROM projects WHERE published = 1 ORDER BY sort, id") as $r) {
         $r = decodeRow($r, $JSON_COLS);
@@ -177,6 +210,7 @@ if ($route === 'content' && $method === 'GET') {
             'short' => $bi($r, 'short'), 'role' => $bi($r, 'role'), 'duration' => $bi($r, 'duration'),
             'stack' => $r['stack'], 'features' => $r['features'], 'boss' => $r['boss'],
             'demo' => $r['demo'], 'repo' => $r['repo'],
+            'testimonials' => $byProject[$r['slug']] ?? [],
         ];
     }
     $certs = [];

@@ -44,6 +44,10 @@ const SCHEMA: string[] = [
     id INTEGER PRIMARY KEY AUTOINCREMENT, period TEXT NOT NULL DEFAULT '', title_id TEXT NOT NULL DEFAULT '',
     title_en TEXT NOT NULL DEFAULT '', body_id TEXT NOT NULL DEFAULT '', body_en TEXT NOT NULL DEFAULT '',
     active INTEGER NOT NULL DEFAULT 0, sort INTEGER NOT NULL DEFAULT 0)`,
+  `CREATE TABLE IF NOT EXISTS testimonials (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, project_slug TEXT NOT NULL DEFAULT '', name TEXT NOT NULL DEFAULT '',
+    role TEXT NOT NULL DEFAULT '', text_id TEXT NOT NULL DEFAULT '', text_en TEXT NOT NULL DEFAULT '',
+    rating INTEGER NOT NULL DEFAULT 5, sort INTEGER NOT NULL DEFAULT 0, published INTEGER NOT NULL DEFAULT 1)`,
   'CREATE TABLE IF NOT EXISTS site_settings (id INTEGER PRIMARY KEY, data TEXT NOT NULL DEFAULT \'{}\')',
 ]
 
@@ -71,6 +75,23 @@ async function init(): Promise<void> {
       sql: 'INSERT OR REPLACE INTO site_settings (id, data) VALUES (1, ?)',
       args: [JSON.stringify(SEED.settings)],
     })
+  }
+
+  // Seed testimoni secara mandiri (tidak ikut gerbang projects di atas):
+  // DB live sudah berisi proyek sejak awal, jadi blok seed proyek tidak akan
+  // jalan lagi — testimoni harus diisi sendiri saat tabelnya masih kosong.
+  const tcount = await db.execute('SELECT COUNT(*) AS n FROM testimonials')
+  if (Number(tcount.rows[0]?.n ?? 0) === 0) {
+    const cols = TABLES.testimonials
+    const sql = `INSERT INTO testimonials (${cols.join(',')}) VALUES (${cols.map(() => '?').join(',')})`
+    for (const row of SEED.testimonials) {
+      const args = cols.map((c) => {
+        const v = row[c]
+        if (v === undefined) return null
+        return v as string | number | null
+      })
+      await db.execute({ sql, args })
+    }
   }
 
   // Bootstrap akun admin dari env (hanya saat tabel admins masih kosong).

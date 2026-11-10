@@ -362,6 +362,128 @@
    "sort": 3
   }
  ],
+ "testimonials": [
+  {
+   "project_slug": "lkpm-monitor",
+   "name": "Sari",
+   "role": "PIC LKPM — DPMPTSP",
+   "text_id": "Dulu rekap LKPM makan waktu berhari-hari. Sekarang skor prioritasnya langsung kelihatan, kami tinggal hubungi perusahaan yang paling mendesak.",
+   "text_en": "Compiling LKPM reports used to take days. Now the priority scores are visible at a glance — we just call the most urgent companies.",
+   "rating": 5,
+   "sort": 1,
+   "published": 1
+  },
+  {
+   "project_slug": "lkpm-monitor",
+   "name": "Budi",
+   "role": "Staf DPMPTSP",
+   "text_id": "Tampilannya gampang dipakai, bahkan untuk staf yang tidak terbiasa dengan komputer.",
+   "text_en": "The interface is easy to use, even for staff who are not used to computers.",
+   "rating": 5,
+   "sort": 2,
+   "published": 1
+  },
+  {
+   "project_slug": "lkpm-monitor",
+   "name": "Dewi",
+   "role": "Kabid — DPMPTSP",
+   "text_id": "Impor data OSS yang dulu sering dobel sekarang rapi. Laporan triwulan jadi lebih cepat selesai.",
+   "text_en": "OSS data imports that used to duplicate are now clean. Quarterly reports finish much faster.",
+   "rating": 4,
+   "sort": 3,
+   "published": 1
+  },
+  {
+   "project_slug": "lkpm-monitor",
+   "name": "Agus",
+   "role": "PIC LKPM — DPMPTSP",
+   "text_id": "Follow-up perusahaan tercatat semua, jadi tidak ada yang terlewat.",
+   "text_en": "Every company follow-up is recorded, so nothing slips through.",
+   "rating": 5,
+   "sort": 4,
+   "published": 1
+  },
+  {
+   "project_slug": "lkpm-monitor",
+   "name": "Maya",
+   "role": "Staf DPMPTSP",
+   "text_id": "Dashboard per triwulannya membantu kami melihat capaian dibanding tahun lalu.",
+   "text_en": "The quarterly dashboard helps us see achievements compared to last year.",
+   "rating": 4,
+   "sort": 5,
+   "published": 1
+  },
+  {
+   "project_slug": "rumah-cahaya",
+   "name": "Rina",
+   "role": "Orang tua",
+   "text_id": "Checkout QRIS-nya mudah, anak saya langsung bisa main MiniApp-nya setelah beli.",
+   "text_en": "The QRIS checkout is easy — my child could play the MiniApp right after purchase.",
+   "rating": 5,
+   "sort": 1,
+   "published": 1
+  },
+  {
+   "project_slug": "rumah-cahaya",
+   "name": "Fitri",
+   "role": "Guru PAUD",
+   "text_id": "Ebook-nya menarik, gambarnya cerah dan bahasanya mudah dipahami anak.",
+   "text_en": "The ebooks are engaging, the illustrations are bright and the language is easy for children to understand.",
+   "rating": 5,
+   "sort": 2,
+   "published": 1
+  },
+  {
+   "project_slug": "rumah-cahaya",
+   "name": "Dedi",
+   "role": "Pembeli",
+   "text_id": "Pesanannya cepat diproses, kode redeem langsung dikirim ke WhatsApp.",
+   "text_en": "The order was processed quickly and the redeem code arrived straight on WhatsApp.",
+   "rating": 4,
+   "sort": 3,
+   "published": 1
+  },
+  {
+   "project_slug": "rumah-cahaya",
+   "name": "Sinta",
+   "role": "Pembeli",
+   "text_id": "Halaman promonya jelas, harga spesialnya langsung kelihatan.",
+   "text_en": "The promo page is clear — the special price is visible right away.",
+   "rating": 5,
+   "sort": 4,
+   "published": 1
+  },
+  {
+   "project_slug": "oss-scraper",
+   "name": "Hadi",
+   "role": "Staf Administrasi",
+   "text_id": "Data NIB yang tadinya dicari manual satu-satu sekarang tinggal ekspor ke Excel.",
+   "text_en": "NIB data that used to be searched manually one by one can now just be exported to Excel.",
+   "rating": 5,
+   "sort": 1,
+   "published": 1
+  },
+  {
+   "project_slug": "oss-scraper",
+   "name": "Lina",
+   "role": "Operator Data",
+   "text_id": "Login dan OTP-nya jalan otomatis, tidak perlu ditunggui.",
+   "text_en": "Login and OTP run automatically — no need to babysit them.",
+   "rating": 4,
+   "sort": 2,
+   "published": 1
+  },
+  {
+   "project_slug": "oss-scraper",
+   "name": "Rudi",
+   "role": "Analis Data",
+   "text_id": "Laporan yang kami butuhkan setiap minggu jadi jauh lebih cepat disiapkan.",
+   "text_en": "The weekly reports we need are prepared much faster now.",
+   "rating": 5,
+   "sort": 3,
+   "published": 1
+  }
+ ],
  "settings": {
   "name": "Bima Fadi Lana",
   "brand": "BIMA.",

@@ -1,6 +1,6 @@
 // GET /api/{tabel} — daftar baris mentah (login)
 // POST /api/{tabel} — tambah baris (login)
-// Tabel: projects, certificates, skill_categories, journey
+// Tabel: projects, certificates, skill_categories, journey, testimonials
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { requireAuth } from './_lib/auth.js'
 import { getClient } from './_lib/db.js'
