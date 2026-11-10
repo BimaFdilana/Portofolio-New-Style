@@ -4,6 +4,7 @@ import { useApp } from '../lib/store'
 import { useContent } from '../lib/content'
 import { Footer } from '../components/Sections'
 import { Stars } from '../components/ui'
+import { scrollToEl } from '../lib/smoothScroll'
 import type { Testimonial } from '../data/content'
 
 /** Foto pemberi ulasan — gambar bila ada, kalau tidak lingkaran inisial nama. */
@@ -98,7 +99,7 @@ export function ProjectDetail() {
   const { t, lang } = useApp()
   const { projects } = useContent()
   const p = projects.find(x => x.slug === slug)
-  useEffect(() => { window.scrollTo(0, 0) }, [slug])
+  useEffect(() => { scrollToEl(0, true) }, [slug])
 
   if (!p) {
     return (

@@ -5,7 +5,9 @@ import { ContentProvider } from './lib/content'
 import { sfx, startBgm } from './lib/audio'
 import { LoadingScreen, StartScreen } from './components/Boot'
 import { FloatingButtons, Navbar } from './components/Navbar'
+import { CustomCursor } from './components/Cursor'
 import { MascotGuide } from './components/MascotGuide'
+import { initSmoothScroll, scrollToEl } from './lib/smoothScroll'
 import { spawnConfetti } from './components/ui'
 import { Home } from './pages/Home'
 import { ProjectDetail } from './pages/ProjectDetail'
@@ -21,7 +23,10 @@ function Site() {
   const [toast, setToast] = useState(false)
   const { pathname } = useLocation()
 
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  useEffect(() => { scrollToEl(0, true) }, [pathname])
+
+  // Smooth scroll (Lenis) + kursor custom: nyala sekali seumur halaman.
+  useEffect(() => { initSmoothScroll() }, [])
 
   // SFX klik global: setiap klik menu/tombol berbunyi (syarat pemilik).
   useEffect(() => {
@@ -80,6 +85,7 @@ function Site() {
       </Suspense>
       <FloatingButtons />
       <MascotGuide />
+      <CustomCursor />
       {toast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[85] dialog-rpg px-5 py-3 font-game text-[10px]" role="status">
           🪙 {t('egg.found')}

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
 import { useContent } from '../lib/content'
+import { scrollToEl } from '../lib/smoothScroll'
 
 const LINKS = [
   { to: '/', hash: '', key: 'nav.home' },
@@ -13,9 +14,9 @@ const LINKS = [
 ] as const
 
 export function goSection(navigate: (p: string) => void, pathname: string, hash: string) {
-  if (!hash) { window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-  if (pathname !== '/') { navigate('/'); setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' }), 120) }
-  else document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
+  if (!hash) { scrollToEl(0); return }
+  if (pathname !== '/') { navigate('/'); setTimeout(() => scrollToEl(hash), 120) }
+  else scrollToEl(hash)
 }
 
 export function Navbar() {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
 import { useContent } from '../lib/content'
+import { scrollToEl } from '../lib/smoothScroll'
 import { DialogBox, SectionTitle, Stars, spawnConfetti } from './ui'
 
 /* ---------------- INVENTORY (SKILLS) ---------------- */
@@ -231,7 +232,7 @@ export function Footer() {
           <a className="hover:text-ochre" href="#certs">RELICS</a>
           <a className="hover:text-ochre" href="#contact">QUEST</a>
         </nav>
-        <button className="font-game text-[9px] underline" onClick={() => { sfx.back(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+        <button className="font-game text-[9px] underline" onClick={() => { sfx.back(); scrollToEl(0) }}>
           ↑ {t('footer.made')}
         </button>
       </div>

@@ -25,7 +25,36 @@
   --color-grape: #8b5cf6;
 }
 
-html { scroll-behavior: smooth; }
+/* Smooth scroll (Lenis) — scroll-behavior CSS sengaja TIDAK dipakai karena
+ * bentrok dengan animasi raf Lenis; semua lompatan lewat scrollToEl(). */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Kursor custom: cincin bulat + titik di tengah. Kursor bawaan
+ * disembunyikan hanya saat komponen kursor aktif (kelas di <html>). */
+.custom-cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 200; pointer-events: none;
+  width: 36px; height: 36px; border-radius: 9999px;
+  border: 2.5px solid var(--color-ink);
+  background: rgba(255, 201, 60, 0.18);
+  transition: width .18s ease, height .18s ease, background .18s ease, border-color .18s ease, opacity .15s ease;
+}
+.custom-cursor-ring.cursor-hover {
+  width: 52px; height: 52px;
+  background: rgba(255, 201, 60, 0.32);
+  border-color: var(--color-terra);
+}
+.custom-cursor-dot {
+  position: fixed; left: 0; top: 0; z-index: 201; pointer-events: none;
+  width: 7px; height: 7px; border-radius: 9999px;
+  background: var(--color-terra);
+  border: 1.5px solid #fff;
+  transition: opacity .15s ease;
+}
+.custom-cursor-ring.cursor-hidden, .custom-cursor-dot.cursor-hidden { opacity: 0; }
+.has-custom-cursor, .has-custom-cursor * { cursor: none !important; }
 /* Jangan biarkan konten melebar melewati layar di HP: kalau ada elemen yang
  * overflow horizontal, layout viewport ikut melebar dan elemen fixed yang
  * berlabuh di kanan (maskot) terdorong keluar layar. `clip` (bukan hidden)
