@@ -11,7 +11,7 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onStart])
   return (
-    <div className="fixed inset-0 z-[80] bg-world flex flex-col items-center justify-start pt-[7vh] cursor-pointer select-none"
+    <div className="fixed inset-0 z-[80] bg-world flex flex-col items-center justify-center cursor-pointer select-none"
       onClick={onStart} role="button" aria-label="Press start">
       <p className="font-game text-[10px] sm:text-xs text-parchment" style={{ textShadow: '2px 2px 0 rgba(30,37,71,.5)' }}>
         © 2026 {t('boot.copyright')}
@@ -55,7 +55,7 @@ export function LoadingScreen({ done }: { done: () => void }) {
   }, [done])
   const step = ASSET_STEPS[Math.min(ASSET_STEPS.length - 1, Math.floor(pct / 30))]
   return (
-    <div className="fixed inset-0 z-[80] bg-world flex items-start justify-center pt-[9vh]">
+    <div className="fixed inset-0 z-[80] bg-world flex items-center justify-center">
       <div className="bg-parchment/[.97] border-[3px] border-ink rounded-[20px] shadow-[6px_6px_0_rgba(30,37,71,.4)] px-8 sm:px-12 py-8 text-center max-w-[92vw]">
         <p className="font-display text-xl sm:text-2xl">
           <span className="title-chunky">FULL STACK</span>{' '}
