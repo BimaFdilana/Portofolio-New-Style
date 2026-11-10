@@ -370,15 +370,19 @@ export function MascotGuide() {
               style={{ left: `${18 + Math.random() * 56}px`, top: 6 }}>💗</span>
           ))}
         </button>
-        {/* Tombol pesan — ganti tombol ✕: buka chat support. */}
-        <button onClick={openChat} aria-label={t('chat.open')}
-          className="pointer-events-auto absolute -top-1 -left-1 h-8 rounded-full bg-white border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] hover:scale-105 active:scale-95 transition-transform flex items-center gap-1 px-2">
-          <span className="text-base leading-none">💬</span>
-          <span className="font-game text-[11px] leading-none">{t('chat.ask')}</span>
-          {!chatOpened && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-terra text-white border-2 border-ink text-[9px] font-black leading-[14px]">1</span>
-          )}
-        </button>
+        {/* Tombol pesan — ganti tombol ✕: buka chat support. Melayang di
+          ATAS karakter dengan jarak 8px (tidak lagi menempel di bahunya);
+          disembunyikan saat chat terbuka supaya tidak menumpuk panel. */}
+        {!chatOpen && (
+          <button onClick={openChat} aria-label={t('chat.open')}
+            className="pointer-events-auto absolute bottom-[calc(100%+8px)] left-0 h-8 rounded-full bg-white border-[3px] border-ink shadow-[2px_2px_0_var(--color-ink)] hover:scale-105 active:scale-95 transition-transform flex items-center gap-1 px-2">
+            <span className="text-base leading-none">💬</span>
+            <span className="font-game text-[11px] leading-none">{t('chat.ask')}</span>
+            {!chatOpened && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-terra text-white border-2 border-ink text-[9px] font-black leading-[14px]">1</span>
+            )}
+          </button>
+        )}
       </div>
     </div>
   )
