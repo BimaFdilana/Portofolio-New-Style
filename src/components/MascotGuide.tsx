@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useApp } from '../lib/store'
+import { useContent } from '../lib/content'
 import { sfx } from '../lib/audio'
 import type { MsgKey } from '../lib/i18n'
 
@@ -30,32 +31,41 @@ const CHAT_MIN_IDLE = 1200 // jangan bicara saat baru selesai scroll
 const WALK_GAP = 260 // ms tanpa scroll sebelum dianggap berhenti jalan
 const STEP_MS = 150 // pergantian frame langkah saat jalan
 
-/** Pemandu karakter full-body di TEPI KANAN website. Dia tidak lagi mengikuti
- *  kursor — posisinya naik mengikuti progres scroll (makin jauh di-scroll,
- *  makin tinggi dia "memanjat" tepi kanan), dan dia BERJALAN (siklus 2 frame)
- *  selama pengguna meng-scroll; saat diam dia berdiri santai.
+/** Pemandu karakter full-body di KANAN BAWAH website (posisi tetap, tidak
+ *  lagi memanjat mengikuti scroll). Dia BERJALAN (siklus 2 frame) selama
+ *  pengguna meng-scroll; saat diam dia berdiri santai.
  *
  *  Dia juga HIDUP SENDIRI: sesekali (tiap ~16–26 dtk, saat halaman terlihat
  *  & pengguna sedang diam) dia melambai + berbicara sendiri — menyapa sesuai
  *  waktu, mengomentari section yang sedang dibaca, atau berbagi tips acak.
- *  Klik dia untuk melambai + tips acak. Bisa disembunyikan & dipanggil lagi.
+ *  Klik dia untuk melambai + tips acak.
  *
- *  Android/HP (lebar < 640px): ukuran mengecil (72x96), dan dia tinggal di
- *  bagian bawah layar (80% -> 58% tinggi layar) supaya tidak menutupi konten
- *  bacaan; gelembung dialog mengecil. Hormat reduced-motion: parkir di kanan
- *  bawah, tanpa animasi jalan & tanpa ucapan otomatis. */
+ *  Tombol 💬 di pojok karakternya membuka CHAT SUPPORT — gelembung dialog
+ *  tempat pengunjung bertanya (proyek, rate, CV, kontak, teknologi) dan
+ *  dijawab otomatis oleh pemandu; untuk hal di luar catatan, diarahkan ke
+ *  WhatsApp Bima. Ucapan otomatis berhenti sementara saat chat terbuka.
+ *
+ *  Android/HP (lebar < 640px): ukuran mengecil (72x96); gelembung dialog
+ *  mengecil. Hormat reduced-motion: tanpa animasi jalan & tanpa ucapan
+ *  otomatis. */
+type ChatMsg = { from: 'me' | 'bot'; text: string; link?: { label: string; href: string } }
+
 export function MascotGuide() {
-  const { t } = useApp()
+  const { t, lang } = useApp()
+  const { owner } = useContent()
   const { pathname } = useLocation()
-  const [hidden, setHidden] = useState(() => localStorage.getItem('mascot-hidden') === '1')
   const [frame, setFrame] = useState<Frame>('idle')
   const [bubble, setBubble] = useState<string | null>(null)
   const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640)
   const [hearts, setHearts] = useState<number[]>([])
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const btnRef = useRef<HTMLButtonElement>(null)
-  const topRef = useRef(0)
-  const targetTopRef = useRef(0)
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatOpened, setChatOpened] = useState(false)
+  const [messages, setMessages] = useState<ChatMsg[]>([])
+  const [typing, setTyping] = useState(false)
+  const [input, setInput] = useState('')
+  const msgsRef = useRef<HTMLDivElement>(null)
+  const chatOpenRef = useRef(false)
+  const typingTimer = useRef<number | null>(null)
   const lastScrollRef = useRef(0)
   const waveUntilRef = useRef(0)
   const frameRef = useRef<Frame>('idle')
@@ -80,8 +90,11 @@ export function MascotGuide() {
   }
 
   // Preload semua sprite supaya ganti frame instan (di luar muatan awal).
+  // Bersihkan juga penanda sembunyi dari versi lama — karakter kini selalu
+  // tampil di kanan bawah (tombol ✕ sudah diganti tombol chat).
   useEffect(() => {
     ALL.forEach(f => { const im = new Image(); im.src = SPRITES[f] })
+    localStorage.removeItem('mascot-hidden')
   }, [])
 
   // Layar kecil = mode HP (Android): ukuran & posisi menyesuaikan.
@@ -100,47 +113,18 @@ export function MascotGuide() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Target posisi dari progres scroll. Desktop: 60% -> 12% tinggi layar.
-  // HP: 80% -> 58% (tinggal di bawah, dekat jempol, tak menutupi bacaan).
+  // Loop: tentukan frame (jalan / diam / melambai). Posisi karakter TETAP
+  // di kanan bawah — yang bergerak hanya sprite-nya (jalan di tempat saat
+  // pengguna meng-scroll). Semua jam pakai performance.now() (campur
+  // Date.now() bikin override tidak pernah kedaluwarsa — bug yang pernah
+  // ketemu di versi kursor).
   useEffect(() => {
-    const H = mobile ? 96 : 128
-    const [top0, top1] = mobile ? [0.80, 0.58] : [0.60, 0.12]
-    const updateTarget = () => {
-      const vh = window.innerHeight
-      const max = Math.max(1, document.documentElement.scrollHeight - vh)
-      const p = Math.min(1, Math.max(0, window.scrollY / max))
-      targetTopRef.current = Math.min(
-        Math.max(vh * (top0 - p * (top0 - top1)), 8),
-        vh - H - 8,
-      )
-    }
-    const onScroll = () => {
-      lastScrollRef.current = performance.now()
-      updateTarget()
-    }
-    updateTarget()
-    topRef.current = targetTopRef.current
-    wrapRef.current?.style.setProperty('transform', `translateY(${topRef.current}px)`)
+    const onScroll = () => { lastScrollRef.current = performance.now() }
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', updateTarget)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', updateTarget)
-    }
-  }, [mobile])
-
-  // Loop: lerp posisi ke target + tentukan frame (jalan / diam / melambai).
-  // Semua jam pakai performance.now() (campur Date.now() bikin override
-  // tidak pernah kedaluwarsa — bug yang pernah ketemu di versi kursor).
-  useEffect(() => {
-    if (reduced) return
+    if (reduced) return () => window.removeEventListener('scroll', onScroll)
     let raf = 0
     const tick = (now: number) => {
-      const top = topRef.current + (targetTopRef.current - topRef.current) * 0.12
-      topRef.current = top
       const walking = now - lastScrollRef.current < WALK_GAP
-      const bob = walking ? Math.sin(now / 90) * 3 : Math.sin(now / 900) * 2
-      wrapRef.current?.style.setProperty('transform', `translateY(${top + bob}px)`)
       let next: Frame
       if (now < waveUntilRef.current) next = 'wave'
       else if (walking) next = Math.floor(now / STEP_MS) % 2 === 0 ? 'walk-a' : 'walk-b'
@@ -152,16 +136,19 @@ export function MascotGuide() {
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [reduced])
 
   // Ngobrol sendiri: sesekali melambai + berbicara tanpa diminta — menyapa
   // sesuai waktu, mengomentari section yang sedang dibaca, atau tips acak.
-  // Hanya saat: tidak disembunyikan, tab terlihat, pengguna sedang diam
-  // (tidak baru scroll / klik), tidak ada gelembung tampil, dan sudah cukup
-  // lama sejak ucapan terakhir. Tanpa reduced-motion: diam total.
+  // Hanya saat: tab terlihat, pengguna sedang diam (tidak baru scroll /
+  // klik), tidak ada gelembung tampil, sudah cukup lama sejak ucapan
+  // terakhir, dan CHAT TIDAK sedang terbuka. Tanpa reduced-motion: diam total.
   useEffect(() => {
-    if (reduced || hidden) return
+    if (reduced) return
     let alive = true
     let timer = 0
     const currentSection = (): SectionId => {
@@ -199,6 +186,7 @@ export function MascotGuide() {
         && now - lastSpeakRef.current > CHAT_MIN
         && now >= waveUntilRef.current
         && !bubbleVisibleRef.current
+        && !chatOpenRef.current
       if (canSpeak) {
         speak()
         timer = window.setTimeout(tick, CHAT_MIN + Math.random() * (CHAT_MAX - CHAT_MIN))
@@ -212,7 +200,74 @@ export function MascotGuide() {
       window.clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced, hidden])
+  }, [reduced])
+
+  // ---- Chat support: jawaban otomatis berdasarkan kata kunci ----
+  const waLink = `https://wa.me/${owner.whatsapp}`
+  const replyFor = (raw: string): ChatMsg => {
+    const q = raw.toLowerCase()
+    const tr = tRef.current
+    if (/(proyek|project|dungeon|portofolio|porto)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rProjects'), link: { label: tr('chat.rProjectsLink'), href: '#projects' } }
+    }
+    if (/(harga|rate|biaya|price|cost|tarif|ongkos|bayar|fee)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rRate'), link: { label: tr('chat.waLink'), href: waLink } }
+    }
+    if (/(kontak|contact|whatsapp|\bwa\b|email|hubungi|telepon|telpon)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rContact'), link: { label: tr('chat.waLink'), href: waLink } }
+    }
+    if (/(cv|resume)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rCv'), link: { label: tr('chat.rCvLink'), href: owner.cvUrl } }
+    }
+    if (/(teknologi|tech|stack|laravel|react|typescript|mysql|tailwind|vue|php|node)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rTech'), link: { label: tr('chat.rTechLink'), href: '#skills' } }
+    }
+    if (/(tersedia|available|siap|kosong|sibuk|jadwal|jam|waktu|kapan)/.test(q)) {
+      return owner.available
+        ? { from: 'bot', text: tr('chat.rAvailYes'), link: { label: tr('chat.waLink'), href: waLink } }
+        : { from: 'bot', text: tr('chat.rAvailNo') }
+    }
+    if (/(halo|hai|\bhi\b|hello|pagi|siang|sore|malam|hei|permisi)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rHello') }
+    }
+    if (/(terima kasih|makasih|thanks|thank)/.test(q)) {
+      return { from: 'bot', text: tr('chat.rThanks') }
+    }
+    return { from: 'bot', text: tr('chat.rDefault'), link: { label: tr('chat.waLink'), href: waLink } }
+  }
+  const sendChat = (raw: string) => {
+    const text = raw.trim()
+    if (!text) return
+    setMessages(m => [...m, { from: 'me', text }])
+    setInput('')
+    setTyping(true)
+    if (typingTimer.current) window.clearTimeout(typingTimer.current)
+    typingTimer.current = window.setTimeout(() => {
+      setMessages(m => [...m, replyFor(text)])
+      setTyping(false)
+    }, 700)
+  }
+  const openChat = () => {
+    sfx.pickup()
+    setBubble(null)
+    bubbleVisibleRef.current = false
+    if (bubbleTimer.current) window.clearTimeout(bubbleTimer.current)
+    chatOpenRef.current = true
+    setChatOpen(true)
+    setChatOpened(true)
+    wave(1200)
+    setMessages(m => (m.length === 0 ? [{ from: 'bot', text: t('chat.greet') }] : m))
+  }
+  const closeChat = () => {
+    chatOpenRef.current = false
+    setChatOpen(false)
+  }
+
+  // Gulir daftar pesan ke bawah setiap ada pesan / status mengetik baru.
+  useEffect(() => {
+    const el = msgsRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages, typing, chatOpen])
 
   if (pathname === '/game') return null
 
@@ -231,43 +286,82 @@ export function MascotGuide() {
     const pool = mobile ? TIPS.filter(k => k !== 'mascot.tip4') : TIPS
     showBubble(t(pool[Math.floor(Math.random() * pool.length)]))
   }
-  const onHide = () => {
-    wave(900)
-    showBubble(t('mascot.bye'), 2600)
-    window.setTimeout(() => {
-      localStorage.setItem('mascot-hidden', '1')
-      setHidden(true)
-    }, 900)
-  }
-  const onShow = () => {
-    localStorage.setItem('mascot-hidden', '0')
-    setHidden(false)
-    sfx.coin()
-    wave()
-    window.setTimeout(() => showBubble(t('mascot.hi'), 4200), 300)
-  }
 
-  if (hidden) {
-    return (
-      <button onClick={onShow} aria-label={t('mascot.show')}
-        className="fixed right-3 bottom-24 z-[60] w-11 h-11 rounded-full bg-white border-[3px] border-ink shadow-[3px_3px_0_var(--color-ink)] text-xl anim-floaty">
-        💗
-      </button>
-    )
+  const quickReplies: MsgKey[] = ['chat.qProjects', 'chat.qRate', 'chat.qCv', 'chat.qWa']
+  const quickTexts: Record<string, string> = {
+    'chat.qProjects': lang === 'id' ? 'Lihat proyek Bima' : 'Show me Bima\'s projects',
+    'chat.qRate': lang === 'id' ? 'Berapa rate proyek?' : 'What are your project rates?',
+    'chat.qCv': lang === 'id' ? 'Minta CV Bima' : 'Send me Bima\'s CV',
+    'chat.qWa': lang === 'id' ? 'Hubungi via WhatsApp' : 'Contact via WhatsApp',
   }
 
   return (
-    <div ref={wrapRef}
-      className="fixed right-2 top-0 z-[60] pointer-events-none will-change-transform"
-      style={reduced ? { top: 'auto', bottom: 16 } : undefined}>
+    <div className="fixed right-3 bottom-4 z-[60]">
+      {/* Panel chat support — gelembung dialog di atas karakter. */}
+      {chatOpen && (
+        <div className="dialog-rpg absolute bottom-[calc(100%+12px)] right-0 w-[min(340px,calc(100vw-24px))] pointer-events-auto flex flex-col overflow-hidden" role="dialog" aria-label={t('chat.title')}>
+          <div className="flex items-center gap-2 px-3 py-2 border-b-[3px] border-ink bg-gradient-to-b from-[#ffe066] to-[#ffb800]">
+            <img src={SPRITES.idle} alt="" className="w-8 h-8 object-contain shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="font-game text-[13px] leading-none">BIMA · {t('chat.title')}</p>
+              <p className="text-[11px] font-bold text-ink/70 mt-1 flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-[#2f9e1d] border border-ink" /> {t('chat.online')}
+              </p>
+            </div>
+            <button onClick={closeChat} aria-label={t('chat.close')}
+              className="w-7 h-7 rounded-full bg-white border-2 border-ink text-[12px] leading-none text-ink shadow-sm shrink-0">✕</button>
+          </div>
+          <div ref={msgsRef} className="px-3 py-3 space-y-2 overflow-y-auto max-h-[240px] bg-parchment/60 dark:bg-transparent">
+            {messages.map((m, i) => (
+              <div key={i} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] px-3 py-2 text-[13px] font-bold leading-snug border-2 border-ink ${
+                  m.from === 'me'
+                    ? 'bg-gradient-to-b from-[#7cc4ff] to-[#2f9bff] text-white rounded-2xl rounded-br-sm shadow-[2px_2px_0_var(--color-ink)]'
+                    : 'bg-white dark:bg-night rounded-2xl rounded-bl-sm shadow-[2px_2px_0_var(--color-ink)]'
+                }`}>
+                  <p>{m.text}</p>
+                  {m.link && (
+                    <a href={m.link.href} target={m.link.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
+                      onClick={() => setChatOpen(false)}
+                      className="inline-block mt-2 font-game text-[11px] bg-white text-ink border-2 border-ink rounded-full px-3 py-1 shadow-[2px_2px_0_var(--color-ink)]">
+                      {m.link.label} ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+            {typing && (
+              <div className="flex justify-start">
+                <div className="px-3 py-2 text-[13px] font-bold bg-white dark:bg-night border-2 border-ink rounded-2xl rounded-bl-sm shadow-[2px_2px_0_var(--color-ink)]">
+                  {t('chat.typing')}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="px-3 pt-1 pb-2 flex gap-1 flex-wrap">
+            {quickReplies.map(k => (
+              <button key={k} onClick={() => sendChat(quickTexts[k])}
+                className="font-game text-[10px] bg-white dark:bg-night border-2 border-ink rounded-full px-2 py-1 shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                {t(k)}
+              </button>
+            ))}
+          </div>
+          <form className="flex gap-2 px-3 pb-3" onSubmit={e => { e.preventDefault(); sendChat(input) }}>
+            <input value={input} onChange={e => setInput(e.target.value)} placeholder={t('chat.placeholder')}
+              aria-label={t('chat.placeholder')}
+              className="min-w-0 flex-1 border-[3px] border-ink rounded-xl px-3 py-2 text-sm font-bold bg-white text-ink" />
+            <button type="submit" className="btn-game btn-green !px-3 !py-2 shrink-0" aria-label={t('chat.send')}>➤</button>
+          </form>
+        </div>
+      )}
       <div className="relative">
-        {bubble && (
+        {bubble && !chatOpen && (
           <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 w-max dialog-rpg px-3 py-2 text-center pointer-events-none ${mobile ? 'max-w-[180px]' : 'max-w-[220px]'}`}>
             <p className={`leading-snug font-bold text-ink dark:text-parchment ${mobile ? 'text-[12px]' : 'text-[13px]'}`}>{bubble}</p>
             <span className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3 h-3 bg-cream dark:bg-[#2c355e] border-t-2 border-r-2 border-ink rotate-45" />
           </div>
         )}
-        <button ref={btnRef} onClick={onMascotClick} aria-label="Pemandu karakter"
+        <button onClick={onMascotClick} aria-label="Pemandu karakter"
           className={`pointer-events-auto relative block drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)] transition-transform hover:scale-105 active:scale-95 ${mobile ? 'w-[72px] h-[96px]' : 'w-[96px] h-[128px]'}`}>
           <img src={SPRITES[frame]} alt="" draggable={false}
             className={`w-full h-full object-contain select-none ${bubble ? 'anim-mascot-talk' : ''}`} />
@@ -276,9 +370,13 @@ export function MascotGuide() {
               style={{ left: `${18 + Math.random() * 56}px`, top: 6 }}>💗</span>
           ))}
         </button>
-        <button onClick={onHide} aria-label={t('mascot.hide')}
-          className="pointer-events-auto absolute -top-1 -left-1 w-6 h-6 rounded-full bg-white border-2 border-ink text-[11px] leading-none text-ink shadow-sm">
-          ✕
+        {/* Tombol pesan — ganti tombol ✕: buka chat support. */}
+        <button onClick={openChat} aria-label={t('chat.open')}
+          className="pointer-events-auto absolute -top-1 -left-1 w-8 h-8 rounded-full bg-white border-[3px] border-ink text-base leading-none shadow-[2px_2px_0_var(--color-ink)] hover:scale-110 active:scale-95 transition-transform">
+          💬
+          {!chatOpened && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-terra text-white border-2 border-ink text-[9px] font-black leading-[14px]">1</span>
+          )}
         </button>
       </div>
     </div>
