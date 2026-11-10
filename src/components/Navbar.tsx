@@ -24,9 +24,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [questFlash, setQuestFlash] = useState(false)
-  // Menu aktif: langsung menyala saat ditekan, lalu mengikuti section yang
-  // sedang terlihat saat scroll (scroll-spy). '' = Beranda (paling atas).
   const [active, setActive] = useState('')
   useEffect(() => {
     if (pathname !== '/') { setActive(''); return }
@@ -40,19 +37,11 @@ export function Navbar() {
     return () => { obs.disconnect(); window.removeEventListener('scroll', onScroll) }
   }, [pathname])
 
-  // Penanda quest baru: berkedip 3 hari pertama setiap bulan (sentuhan tema).
-  useEffect(() => { setQuestFlash(new Date().getDate() <= 3) }, [])
-
   const nav = (hash: string) => { setOpen(false); setActive(hash); goSection(navigate, pathname, hash) }
 
   return (
     <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(30,37,71,.35)]">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[58px] flex items-center gap-2">
-        <span className={`hidden lg:inline font-game text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
-        <button className="font-game text-[11px] text-terra shrink-0 hidden min-[400px]:inline-block" onClick={() => nav('')} aria-label="New quest - home">
-          NEW QUEST
-        </button>
-        <span className={`hidden lg:inline font-game text-[9px] text-terra ${questFlash ? 'anim-blink' : ''}`}>!</span>
         <button className="font-display text-xl sm:text-2xl shrink-0 ml-1 title-chunky" onClick={() => nav('')}>
           {owner.brand}
         </button>

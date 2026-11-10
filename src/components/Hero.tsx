@@ -15,16 +15,11 @@ export function Hero() {
         <h1 className="font-display text-4xl sm:text-6xl leading-[1.15] mt-5 text-ink dark:text-parchment"
           style={{ filter: 'drop-shadow(0 3px 0 rgba(30,37,71,.85))' }}>
           {t('hero.hi')}{' '}
-          <span className="text-ochre">B</span><span className="text-sage dark:text-[#a9bc8e]">I</span><span className="text-steel">M</span><span className="text-terra">A</span>
+          <span className="title-chunky" style={{ filter: 'none' }}>BIMA</span>
         </h1>
         <DialogBox text={t('hero.dialog')} className="mt-6 max-w-xl" />
         <div className="mt-6 flex items-center gap-4 flex-wrap">
           <Hearts n={5} />
-          {owner.available && (
-            <span className="bg-gradient-to-b from-[#8be26a] to-[#2f9e1d] text-white font-game text-[10px] px-3 py-2 border-[3px] border-ink rounded-full shadow-[3px_3px_0_var(--color-ink)]">
-              {t('hero.ready')}
-            </span>
-          )}
         </div>
         <div className="mt-7 flex gap-3 flex-wrap">
           <a href="#projects" className="btn-game btn-red">{t('hero.viewProjects')}</a>
