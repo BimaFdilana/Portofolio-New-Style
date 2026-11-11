@@ -96,6 +96,24 @@ body { font-family: var(--font-sans); color: var(--color-ink); }
   box-shadow: 6px 6px 0 var(--color-ink);
 }
 .dark .card-pixel { background: #2c355e; color: #fff8e7; box-shadow: 6px 6px 0 #000; }
+
+/* Panel HUD modern: kaca tembus pandang dengan blur di atas latar langit —
+ * kesan game tetap (outline tebal) tapi lebih ringan & dewasa daripada
+ * kartu solid. Dipakai kartu-kartu section beranda; panel karakter hero
+ * & admin tetap memakai .card-pixel solid. */
+.hud {
+  background: rgba(255, 248, 231, .78);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 3px solid var(--color-ink);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(30, 37, 71, .16);
+}
+.dark .hud {
+  background: rgba(35, 42, 77, .72);
+  color: #fff8e7;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
+}
 .btn-game {
   display: inline-block;
   font-family: var(--font-game);

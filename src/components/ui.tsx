@@ -1,14 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 
-export function SectionTitle({ icon, a, b }: { icon: string; a: string; b: string }) {
+/* Satu warna aksen per section: lencana judul + garis bawah memakai
+ *  gradasi aksen section itu saja, supaya mata tidak diserang semua warna
+ *  sekaligus di satu layar. Default 'gold' (dipakai halaman lain). */
+const ACCENTS = {
+  gold: 'from-[#ffe066] to-[#ff9d00]',
+  green: 'from-[#7ed957] to-[#2f9e1d]',
+  red: 'from-[#ff7a86] to-[#c81e32]',
+  blue: 'from-[#6ec1ff] to-[#1b6fe0]',
+  purple: 'from-[#c084fc] to-[#8b5cf6]',
+} as const
+export type Accent = keyof typeof ACCENTS
+
+export function SectionTitle({ icon, a, b, accent = 'gold' }: { icon: string; a: string; b: string; accent?: Accent }) {
   return (
-    <div className="text-center mb-8">
-      <span className="inline-block bg-gradient-to-b from-[#ffe066] to-[#ff9d00] text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none">{icon}</span>
+    <div className="text-center mb-10">
+      <span className={`inline-block bg-gradient-to-b ${ACCENTS[accent]} text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none`}>{icon}</span>
       <h2 className="font-display text-3xl sm:text-5xl mt-5 leading-tight">
         <span className="title-chunky">{a}</span>{' '}
         <span className="title-chunky-blue">{b}</span>
       </h2>
-      <div className="w-28 h-[8px] bg-gradient-to-r from-[#ffc93c] to-[#ef3546] mx-auto mt-4 border-[3px] border-ink rounded-full" />
+      <div className={`w-28 h-[8px] bg-gradient-to-r ${ACCENTS[accent]} mx-auto mt-4 border-[3px] border-ink rounded-full`} />
     </div>
   )
 }

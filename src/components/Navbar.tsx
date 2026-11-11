@@ -42,7 +42,7 @@ export function Navbar() {
   const nav = (hash: string) => { setOpen(false); setActive(hash); goSection(navigate, pathname, hash) }
 
   return (
-    <header className="sticky top-0 z-50 bg-parchment dark:bg-nightdeep border-b-[3px] border-ink dark:border-black shadow-[0_3px_0_rgba(30,37,71,.35)]">
+    <header className="sticky top-0 z-50 bg-parchment/85 dark:bg-nightdeep/85 backdrop-blur-md border-b-[3px] border-ink dark:border-black shadow-[0_2px_16px_rgba(30,37,71,.15)]">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 h-[58px] flex items-center gap-2">
         <button className="font-display text-xl sm:text-2xl shrink-0 ml-1 title-chunky" onClick={() => nav('')}>
           {owner.brand}

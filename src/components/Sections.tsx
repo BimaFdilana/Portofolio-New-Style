@@ -13,7 +13,7 @@ import type { SkillCategory } from '../data/content'
 function SkillCard({ cat, lang }: { cat: SkillCategory; lang: 'id' | 'en' }) {
   const { ref, inView } = useInView<HTMLDivElement>()
   return (
-    <div ref={ref} className="card-pixel p-4 h-full">
+    <div ref={ref} className="hud p-4 h-full">
       <p className="font-game text-[10px] leading-relaxed">{cat.icon} {cat.title[lang]}</p>
       <div className="mt-3 space-y-2">
         {cat.items.map((item, ii) => (
@@ -32,8 +32,8 @@ export function Inventory() {
   const { t, lang } = useApp()
   const { skills } = useContent()
   return (
-    <section id="skills" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <Reveal><SectionTitle icon="🎒" a={t('skills.title.a')} b={t('skills.title.b')} /></Reveal>
+    <section id="skills" className="max-w-6xl mx-auto px-3 sm:px-4 py-20">
+      <Reveal><SectionTitle icon="🎒" a={t('skills.title.a')} b={t('skills.title.b')} accent="green" /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {skills.map((cat, ci) => (
           <Reveal key={ci} delay={ci * 90} className="h-full">
@@ -55,14 +55,14 @@ export function Dungeons() {
   const shown = useMemo(() => projects.slice((page - 1) * PER_PAGE, page * PER_PAGE), [page])
   const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
   return (
-    <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <Reveal><SectionTitle icon="🏰" a={t('projects.title.a')} b={t('projects.title.b')} /></Reveal>
+    <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 py-20">
+      <Reveal><SectionTitle icon="🏰" a={t('projects.title.a')} b={t('projects.title.b')} accent="red" /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {shown.map((p, i) => {
           const idx = (page - 1) * PER_PAGE + i
           return (
             <Reveal key={p.slug} delay={i * 80} className="h-full">
-            <article className="card-pixel overflow-hidden flex flex-col h-full">
+            <article className="hud overflow-hidden flex flex-col h-full">
               <div className="h-[130px] border-b-[3px] border-ink relative" style={{ background: p.grad }}>
                 <span className="absolute bottom-2 left-2 bg-parchment/95 border-[3px] border-ink rounded-[8px] px-2 py-[3px] font-game text-[9px]">[ SCREENSHOT PROYEK ]</span>
                 <span className="absolute top-2 right-2 bg-ink/70 text-parchment font-game text-[9px] px-2 py-1 rounded-[8px]">{p.hue}</span>
@@ -100,13 +100,13 @@ export function Relics() {
   const [page, setPage] = useState(1)
   const cert = view !== null ? certificates[view] : null
   return (
-    <section id="certs" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <Reveal><SectionTitle icon="🏆" a={t('certs.title.a')} b={t('certs.title.b')} /></Reveal>
+    <section id="certs" className="max-w-6xl mx-auto px-3 sm:px-4 py-20">
+      <Reveal><SectionTitle icon="🏆" a={t('certs.title.a')} b={t('certs.title.b')} accent="gold" /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {certificates.map((c, i) => (
           <Reveal key={i} delay={i * 80} className="h-full">
           <button onClick={() => { sfx.pickup(); setView(i); setPage(1) }}
-            className="card-pixel p-4 text-left hover:-translate-y-1 transition-transform w-full h-full">
+            className="hud p-4 text-left hover:-translate-y-1 transition-transform w-full h-full">
             <div className="h-[110px] bg-gradient-to-br from-[#ffe066] to-[#ff9d00] dark:from-[#3c5a78] dark:to-[#232a4d] border-[3px] border-ink rounded-2xl flex items-center justify-center text-4xl">🏅</div>
             <p className="font-extrabold mt-3 leading-snug">{c.title[lang]}</p>
             <p className="text-[13px] opacity-80">{c.issuer} · {c.year} · {c.pages} {t('certs.pages')}</p>
@@ -144,12 +144,12 @@ export function AdventureLog() {
   const { t, lang } = useApp()
   const { journey } = useContent()
   return (
-    <section id="journey" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <Reveal><SectionTitle icon="📜" a={t('journey.title.a')} b={t('journey.title.b')} /></Reveal>
+    <section id="journey" className="max-w-6xl mx-auto px-3 sm:px-4 py-20">
+      <Reveal><SectionTitle icon="📜" a={t('journey.title.a')} b={t('journey.title.b')} accent="blue" /></Reveal>
       <div className="max-w-3xl mx-auto space-y-5">
         {journey.map((j, i) => (
           <Reveal key={i} delay={i * 70}>
-          <div className="dialog-rpg p-5 flex gap-4 items-start">
+          <div className="hud p-5 flex gap-4 items-start">
             <span className="text-3xl shrink-0">{j.active ? '🚩' : '✔️'}</span>
             <div>
               <p className="font-game text-[9px] text-terra">{j.period}{j.active ? ` · ${t('journey.active')}` : ''}</p>
@@ -188,8 +188,8 @@ export function FinalQuest() {
     e.currentTarget.reset()
   }
   return (
-    <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <Reveal><SectionTitle icon="⚔️" a={t('contact.title.a')} b={t('contact.title.b')} /></Reveal>
+    <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 py-20">
+      <Reveal><SectionTitle icon="⚔️" a={t('contact.title.a')} b={t('contact.title.b')} accent="purple" /></Reveal>
       <p className="text-center font-extrabold -mt-4 mb-8 bg-parchment/90 dark:bg-night/80 dark:text-parchment inline-block relative left-1/2 -translate-x-1/2 px-5 py-2 border-[3px] border-ink rounded-full shadow-[3px_3px_0_var(--color-ink)]">{t('contact.lead')}</p>
       <div className="grid md:grid-cols-2 gap-6 items-start">
         <div className="grid sm:grid-cols-2 gap-4">
@@ -206,7 +206,7 @@ export function FinalQuest() {
           ))}
         </div>
         <Reveal delay={140}>
-        <form onSubmit={submit} className="dialog-rpg p-5 space-y-4">
+        <form onSubmit={submit} className="hud p-5 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <label className="block">
               <span className="font-game text-[9px]">{t('contact.name')}</span>
