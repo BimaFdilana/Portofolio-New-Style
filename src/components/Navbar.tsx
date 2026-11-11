@@ -4,6 +4,7 @@ import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
 import { useContent } from '../lib/content'
 import { scrollToEl } from '../lib/smoothScroll'
+import { ScrollExp } from './ScrollExp'
 
 const LINKS = [
   { to: '/', hash: '', key: 'nav.home' },
@@ -90,6 +91,7 @@ export function Navbar() {
           <button className="font-game text-[13px] text-left" onClick={toggleMuted}>{muted ? '🔇 UNMUTE SFX' : '🔊 MUTE SFX'}</button>
         </nav>
       )}
+      <ScrollExp />
     </header>
   )
 }

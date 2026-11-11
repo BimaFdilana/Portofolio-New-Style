@@ -136,7 +136,12 @@ body { font-family: var(--font-sans); color: var(--color-ink); }
 }
 .dark .chip { background: #232a4d; color: #fff8e7; }
 .bar-seg { height: 16px; border: 3px solid var(--color-ink); border-radius: 999px; background: #fff; position: relative; overflow: hidden; }
-.bar-seg > i { position: absolute; inset: 0 auto 0 0; display: block; border-radius: 999px; background: linear-gradient(180deg, #ffe066, #ffb800); }
+.bar-seg > i { position: absolute; inset: 0 auto 0 0; display: block; border-radius: 999px; background: linear-gradient(180deg, #ffe066, #ffb800); transition: width 1.1s cubic-bezier(.22,1,.36,1); }
+
+/* Reveal-on-scroll: konten naik + memudar masuk saat pertama masuk
+ *  viewport (lihat komponen Reveal). Tanpa reduced-motion: tampil langsung. */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); will-change: opacity, transform; }
+.reveal-visible { opacity: 1; transform: none; }
 
 /* Judul besar chunky: huruf gradasi + outline tebal + bayangan jatuh. */
 .title-chunky {
@@ -185,5 +190,7 @@ body { font-family: var(--font-sans); color: var(--color-ink); }
 
 @media (prefers-reduced-motion: reduce) {
   .anim-blink, .anim-floaty, .anim-fade-up, .anim-mascot-pop, .anim-heart-rise, .anim-mascot-talk, .type-caret { animation: none !important; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .bar-seg > i { transition: none; }
   html { scroll-behavior: auto; }
 }

@@ -3,8 +3,29 @@ import { Link } from 'react-router-dom'
 import { useApp } from '../lib/store'
 import { sfx } from '../lib/audio'
 import { useContent } from '../lib/content'
+import { useInView } from '../lib/useInView'
 import { scrollToEl } from '../lib/smoothScroll'
 import { DialogBox, SectionTitle, Stars, spawnConfetti } from './ui'
+import { Reveal } from './Reveal'
+import type { SkillCategory } from '../data/content'
+
+/* Kartu skill: bar-nya terisi animasi (0% -> level) saat kartu masuk layar. */
+function SkillCard({ cat, lang }: { cat: SkillCategory; lang: 'id' | 'en' }) {
+  const { ref, inView } = useInView<HTMLDivElement>()
+  return (
+    <div ref={ref} className="card-pixel p-4 h-full">
+      <p className="font-game text-[10px] leading-relaxed">{cat.icon} {cat.title[lang]}</p>
+      <div className="mt-3 space-y-2">
+        {cat.items.map((item, ii) => (
+          <div key={ii}>
+            <div className="flex justify-between text-[13px] font-extrabold"><span>{item}</span><span>Lv {cat.levels[ii]}</span></div>
+            <div className="bar-seg mt-[3px]"><i style={{ width: inView ? `${cat.levels[ii]}%` : '0%', background: 'linear-gradient(180deg,#8be26a,#2f9e1d)' }} /></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 /* ---------------- INVENTORY (SKILLS) ---------------- */
 export function Inventory() {
@@ -12,20 +33,12 @@ export function Inventory() {
   const { skills } = useContent()
   return (
     <section id="skills" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <SectionTitle icon="🎒" a={t('skills.title.a')} b={t('skills.title.b')} />
+      <Reveal><SectionTitle icon="🎒" a={t('skills.title.a')} b={t('skills.title.b')} /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {skills.map((cat, ci) => (
-          <div key={ci} className="card-pixel p-4">
-            <p className="font-game text-[10px] leading-relaxed">{cat.icon} {cat.title[lang]}</p>
-            <div className="mt-3 space-y-2">
-              {cat.items.map((item, ii) => (
-                <div key={ii}>
-                  <div className="flex justify-between text-[13px] font-extrabold"><span>{item}</span><span>Lv {cat.levels[ii]}</span></div>
-                  <div className="bar-seg mt-[3px]"><i style={{ width: `${cat.levels[ii]}%`, background: 'linear-gradient(180deg,#8be26a,#2f9e1d)' }} /></div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Reveal key={ci} delay={ci * 90} className="h-full">
+            <SkillCard cat={cat} lang={lang} />
+          </Reveal>
         ))}
       </div>
     </section>
@@ -43,12 +56,13 @@ export function Dungeons() {
   const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
   return (
     <section id="projects" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <SectionTitle icon="🏰" a={t('projects.title.a')} b={t('projects.title.b')} />
+      <Reveal><SectionTitle icon="🏰" a={t('projects.title.a')} b={t('projects.title.b')} /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {shown.map((p, i) => {
           const idx = (page - 1) * PER_PAGE + i
           return (
-            <article key={p.slug} className="card-pixel overflow-hidden flex flex-col">
+            <Reveal key={p.slug} delay={i * 80} className="h-full">
+            <article className="card-pixel overflow-hidden flex flex-col h-full">
               <div className="h-[130px] border-b-[3px] border-ink relative" style={{ background: p.grad }}>
                 <span className="absolute bottom-2 left-2 bg-parchment/95 border-[3px] border-ink rounded-[8px] px-2 py-[3px] font-game text-[9px]">[ SCREENSHOT PROYEK ]</span>
                 <span className="absolute top-2 right-2 bg-ink/70 text-parchment font-game text-[9px] px-2 py-1 rounded-[8px]">{p.hue}</span>
@@ -63,6 +77,7 @@ export function Dungeons() {
                 </div>
               </div>
             </article>
+            </Reveal>
           )
         })}
       </div>
@@ -86,15 +101,17 @@ export function Relics() {
   const cert = view !== null ? certificates[view] : null
   return (
     <section id="certs" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <SectionTitle icon="🏆" a={t('certs.title.a')} b={t('certs.title.b')} />
+      <Reveal><SectionTitle icon="🏆" a={t('certs.title.a')} b={t('certs.title.b')} /></Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {certificates.map((c, i) => (
-          <button key={i} onClick={() => { sfx.pickup(); setView(i); setPage(1) }}
-            className="card-pixel p-4 text-left hover:-translate-y-1 transition-transform">
+          <Reveal key={i} delay={i * 80} className="h-full">
+          <button onClick={() => { sfx.pickup(); setView(i); setPage(1) }}
+            className="card-pixel p-4 text-left hover:-translate-y-1 transition-transform w-full h-full">
             <div className="h-[110px] bg-gradient-to-br from-[#ffe066] to-[#ff9d00] dark:from-[#3c5a78] dark:to-[#232a4d] border-[3px] border-ink rounded-2xl flex items-center justify-center text-4xl">🏅</div>
             <p className="font-extrabold mt-3 leading-snug">{c.title[lang]}</p>
             <p className="text-[13px] opacity-80">{c.issuer} · {c.year} · {c.pages} {t('certs.pages')}</p>
           </button>
+          </Reveal>
         ))}
       </div>
       {cert && (
@@ -127,11 +144,12 @@ export function AdventureLog() {
   const { t, lang } = useApp()
   const { journey } = useContent()
   return (
-    <section className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <SectionTitle icon="📜" a={t('journey.title.a')} b={t('journey.title.b')} />
+    <section id="journey" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
+      <Reveal><SectionTitle icon="📜" a={t('journey.title.a')} b={t('journey.title.b')} /></Reveal>
       <div className="max-w-3xl mx-auto space-y-5">
         {journey.map((j, i) => (
-          <div key={i} className="dialog-rpg p-5 flex gap-4 items-start">
+          <Reveal key={i} delay={i * 70}>
+          <div className="dialog-rpg p-5 flex gap-4 items-start">
             <span className="text-3xl shrink-0">{j.active ? '🚩' : '✔️'}</span>
             <div>
               <p className="font-game text-[9px] text-terra">{j.period}{j.active ? ` · ${t('journey.active')}` : ''}</p>
@@ -139,6 +157,7 @@ export function AdventureLog() {
               <p className="text-sm mt-1 leading-relaxed">{j.body[lang]}</p>
             </div>
           </div>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -170,20 +189,23 @@ export function FinalQuest() {
   }
   return (
     <section id="contact" className="max-w-6xl mx-auto px-3 sm:px-4 py-14">
-      <SectionTitle icon="⚔️" a={t('contact.title.a')} b={t('contact.title.b')} />
+      <Reveal><SectionTitle icon="⚔️" a={t('contact.title.a')} b={t('contact.title.b')} /></Reveal>
       <p className="text-center font-extrabold -mt-4 mb-8 bg-parchment/90 dark:bg-night/80 dark:text-parchment inline-block relative left-1/2 -translate-x-1/2 px-5 py-2 border-[3px] border-ink rounded-full shadow-[3px_3px_0_var(--color-ink)]">{t('contact.lead')}</p>
       <div className="grid md:grid-cols-2 gap-6 items-start">
         <div className="grid sm:grid-cols-2 gap-4">
           {cards.map((c, i) => (
-            <a key={i} href={c.href} target="_blank" rel="noreferrer"
-              className={`btn-game ${c.bg} !p-4 !text-left block`}>
+            <Reveal key={i} delay={i * 80} className="h-full">
+            <a href={c.href} target="_blank" rel="noreferrer"
+              className={`btn-game ${c.bg} !p-4 !text-left block h-full`}>
               <span className="text-2xl block">{c.icon}</span>
               <span className="block mt-2">{c.label}</span>
               <span className="block font-sans font-bold text-[12px] mt-1 normal-case">{c.note}</span>
               <span className="block font-sans font-bold text-[11px] mt-2 underline">{c.cta}</span>
             </a>
+            </Reveal>
           ))}
         </div>
+        <Reveal delay={140}>
         <form onSubmit={submit} className="dialog-rpg p-5 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <label className="block">
@@ -204,6 +226,7 @@ export function FinalQuest() {
           </label>
           <button type="submit" className="btn-game btn-red w-full sm:w-auto">{t('contact.submit')}</button>
         </form>
+        </Reveal>
       </div>
       {sent !== null && (
         <div className="fixed inset-0 z-[70] bg-ink/70 flex items-center justify-center p-4" onClick={() => setSent(null)}>
