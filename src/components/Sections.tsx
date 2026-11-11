@@ -8,6 +8,7 @@ import { scrollToEl } from '../lib/smoothScroll'
 import { DialogBox, SectionTitle, Stars, spawnConfetti } from './ui'
 import { Reveal } from './Reveal'
 import type { SkillCategory } from '../data/content'
+import { PROJECT_RESULTS } from '../data/content'
 
 /* Kartu skill: bar-nya terisi animasi (0% -> level) saat kartu masuk layar. */
 function SkillCard({ cat, lang }: { cat: SkillCategory; lang: 'id' | 'en' }) {
@@ -71,6 +72,12 @@ export function Dungeons() {
                 <h3 className="font-game text-[13px] leading-relaxed">DUNGEON {ROMAN[idx]} — {p.name.toUpperCase()}</h3>
                 <Stars n={p.difficulty} />
                 <DialogBox text={p.short[lang]} className="!p-3 text-[13px]" />
+                {PROJECT_RESULTS[p.slug] && (
+                  <p className="text-[13px] font-extrabold leading-snug">
+                    <span className="text-terra">{t('projects.result')} </span>
+                    {PROJECT_RESULTS[p.slug][lang]}
+                  </p>
+                )}
                 <div className="mt-auto pt-2 flex gap-2">
                   <Link to={`/dungeon/${p.slug}`} className="btn-game btn-night">{t('projects.detail')}</Link>
                   {p.demo && <a href={p.demo} target="_blank" rel="noreferrer" className="btn-game btn-red">{t('projects.visit')}</a>}

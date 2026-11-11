@@ -171,8 +171,7 @@ export const certificates: Certificate[] = [
   { title: B('Sertifikat Dasar Pemrograman Web', 'Web Programming Fundamentals Certificate'), issuer: 'Dicoding Indonesia', year: 2023, pages: 1 },
 ]
 
-export interface JourneyItem { period: string; title: Bi; body: Bi; active?: boolean }
-export const journey: JourneyItem[] = [
+export interface JourneyItem { period: string; title: Bi; body: Bi; active?: boolean }export const journey: JourneyItem[] = [
   { period: '2025 — SEKARANG', active: true,
     title: B('Developer — DPMPTSP (LKPM Monitor)', 'Developer — DPMPTSP (LKPM Monitor)'),
     body: B('Membangun ulang sistem monitoring LKPM Non-UMK: impor data OSS, skor prioritas perusahaan, dan tindak lanjut PIC.', 'Rebuilding the Non-UMK LKPM monitoring system: OSS data imports, company priority scoring, and PIC follow-ups.') },
@@ -183,3 +182,22 @@ export const journey: JourneyItem[] = [
     title: B('Memulai petualangan Full Stack', 'The Full Stack adventure begins'),
     body: B('Fokus Laravel + JavaScript modern; proyek otomasi data dan aplikasi web dinas.', 'Focus on Laravel + modern JavaScript; data automation tools and agency web apps.') },
 ]
+
+/** Hasil nyata per proyek (baris "HASIL" di kartu Dungeon) — peta statis
+ *  per slug, BUKAN kolom database: tidak bisa diedit dari /admin dan
+ *  tidak disinkron ke seed Turso/PHP. Kalau suatu saat perlu diedit
+ *  dari admin, pindahkan ini jadi kolom `result` di tabel projects. */
+export const PROJECT_RESULTS: Record<string, Bi> = {
+  'lkpm-monitor': B(
+    'Skor prioritas untuk 100 perusahaan setiap triwulan',
+    'Priority scores for 100 companies every quarter',
+  ),
+  'rumah-cahaya': B(
+    'Marketplace live: Ebook & MiniApp, bayar QRIS',
+    'Live marketplace: ebooks & MiniApps, QRIS checkout',
+  ),
+  'oss-scraper': B(
+    'Login, OTP & ekspor laporan berjalan otomatis',
+    'Automated login, OTP & report export',
+  ),
+}

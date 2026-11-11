@@ -28,7 +28,7 @@ export function ScrollExp() {
   return (
     <div className="absolute bottom-0 left-0 right-0 h-[5px] bg-ink/10 dark:bg-white/10"
       role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p)} aria-label="Progres membaca">
-      <div className="h-full bg-gradient-to-r from-[#ffe066] via-[#ffb800] to-[#ef3546] relative"
+      <div className="h-full bg-gradient-to-r from-[#ffe066] via-[#ffb800] to-[#ef3546] relative scroll-exp-fill"
         style={{ width: `${p}%` }}>
         {p > 1 && p < 99 && (
           <span className="absolute -right-[5px] top-1/2 -translate-y-1/2 w-[9px] h-[9px] rounded-full bg-[#ff7a00] border-2 border-ink" />

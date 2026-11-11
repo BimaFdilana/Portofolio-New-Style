@@ -15,12 +15,12 @@ export type Accent = keyof typeof ACCENTS
 export function SectionTitle({ icon, a, b, accent = 'gold' }: { icon: string; a: string; b: string; accent?: Accent }) {
   return (
     <div className="text-center mb-10">
-      <span className={`inline-block bg-gradient-to-b ${ACCENTS[accent]} text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none`}>{icon}</span>
+      <span className={`section-badge inline-block bg-gradient-to-b ${ACCENTS[accent]} text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none`}>{icon}</span>
       <h2 className="font-display text-3xl sm:text-5xl mt-5 leading-tight">
         <span className="title-chunky">{a}</span>{' '}
         <span className="title-chunky-blue">{b}</span>
       </h2>
-      <div className={`w-28 h-[8px] bg-gradient-to-r ${ACCENTS[accent]} mx-auto mt-4 border-[3px] border-ink rounded-full`} />
+      <div className={`section-divider w-28 h-[8px] bg-gradient-to-r ${ACCENTS[accent]} mx-auto mt-4 border-[3px] border-ink rounded-full`} />
     </div>
   )
 }

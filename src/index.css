@@ -114,6 +114,39 @@ body { font-family: var(--font-sans); color: var(--color-ink); }
   color: #fff8e7;
   box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
 }
+
+/* Mode PRO: tampilan bersih untuk klien korporat — satu klik di navbar
+ *  meredam tema game jadi rapi: tanpa langit pixel, judul solid tanpa
+ *  gradasi, tombol datar, kartu solid tanpa blur, awan & gradasi
+ *  disembunyikan/diredam. Diaktifkan lewat kelas .pro di <html> (store).
+ *  Interaksi game (SFX, maskot, mini-game) tetap jalan — yang diredam
+ *  hanya visualnya. */
+.pro .bg-world { background-image: none !important; }
+.pro .title-chunky, .pro .title-chunky-blue {
+  background: none; color: var(--color-ink);
+  -webkit-text-stroke: 0; filter: none;
+}
+.dark.pro .title-chunky, .dark.pro .title-chunky-blue { color: #fff8e7; }
+.pro .btn-game { background: #2f9e1d; box-shadow: 0 2px 0 var(--color-ink); }
+.pro .btn-green { background: #2f9e1d; }
+.pro .btn-blue { background: #1b6fe0; }
+.pro .btn-yellow { background: #ff9d00; }
+.pro .btn-red { background: #c81e32; }
+.pro .btn-grey { background: #8b9bab; }
+.pro .btn-pink { background: #b81d9e; }
+.pro .btn-night { background: #232a4d; }
+.pro .btn-game:active { box-shadow: 0 1px 0 var(--color-ink); }
+.pro .hud, .pro .card-pixel {
+  background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: 0 2px 10px rgba(30, 37, 71, .10);
+}
+.dark.pro .hud, .dark.pro .card-pixel { background: #2c355e; box-shadow: 0 2px 10px rgba(0, 0, 0, .4); }
+.pro .bar-seg > i { background: #2f9e1d !important; }
+.pro .bar-hero .bar-seg > i { background: #e8a100 !important; }
+.pro .section-badge, .pro .section-divider { background: var(--color-ink) !important; }
+.pro .hero-cloud { display: none; }
+.pro .hero-avatar { background: #4a5580 !important; }
+.pro .scroll-exp-fill { background: var(--color-ink) !important; }
 .btn-game {
   display: inline-block;
   font-family: var(--font-game);

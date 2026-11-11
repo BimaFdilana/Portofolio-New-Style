@@ -3,6 +3,11 @@ export type Lang = 'id' | 'en'
 const id = {
   'nav.home': 'BERANDA', 'nav.skills': 'INVENTORY', 'nav.projects': 'DUNGEONS', 'nav.certs': 'RELICS', 'nav.contact': 'QUEST',
   'nav.game': 'GAME', 'nav.bgmOn': 'BGM: ON', 'nav.bgmOff': 'BGM: OFF',
+  'nav.pro': '💼 PRO', 'nav.gameMode': '🎮 GAME',
+  'hero.stats.label': 'Statistik', 'hero.stats.years': 'TAHUN PENGALAMAN',
+  'hero.stats.projects': 'DUNGEON SELESAI', 'hero.stats.certs': 'RELIK DIRAIH',
+  'hero.stats.companies': 'PERUSAHAAN PRIORITAS',
+  'projects.result': '🏆 HASIL:',
   'boot.copyright': 'FULL STACK DEVELOPER', 'boot.tagline': 'SEBUAH PETUALANGAN BARU MENANTI', 'boot.press': '▶ TEKAN MULAI',
   'boot.hint': 'KLIK ATAU SENTUH DI MANA SAJA · TEKAN ENTER / SPASI', 'boot.secret': 'Psst... ada kode rahasia di situs ini 👀',
   'boot.loading': 'MEMBUKA GERBANG KASTIL…', 'boot.assets': 'MEMUAT ASET',
@@ -112,6 +117,11 @@ const id = {
 const en: Record<keyof typeof id, string> = {
   'nav.home': 'HOME', 'nav.skills': 'INVENTORY', 'nav.projects': 'DUNGEONS', 'nav.certs': 'RELICS', 'nav.contact': 'QUEST',
   'nav.game': 'GAME', 'nav.bgmOn': 'BGM: ON', 'nav.bgmOff': 'BGM: OFF',
+  'nav.pro': '💼 PRO', 'nav.gameMode': '🎮 GAME',
+  'hero.stats.label': 'Statistics', 'hero.stats.years': 'YEARS OF EXPERIENCE',
+  'hero.stats.projects': 'DUNGEONS CLEARED', 'hero.stats.certs': 'RELICS EARNED',
+  'hero.stats.companies': 'PRIORITY COMPANIES',
+  'projects.result': '🏆 RESULT:',
   'boot.copyright': 'FULL STACK DEVELOPER', 'boot.tagline': 'A NEW ADVENTURE AWAITS', 'boot.press': '▶ PRESS START',
   'boot.hint': 'CLICK OR TAP ANYWHERE · PRESS ENTER / SPACE', 'boot.secret': 'Psst... there is a secret code on this site 👀',
   'boot.loading': 'OPENING THE CASTLE GATE…', 'boot.assets': 'LOADING ASSETS',

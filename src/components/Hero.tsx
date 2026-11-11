@@ -11,7 +11,7 @@ import { DialogBox, Hearts } from './ui'
  *  Tanpa reduced-motion: semua diam. */
 export function Hero() {
   const { t, lang } = useApp()
-  const { owner } = useContent()
+  const { owner, projects, certificates } = useContent()
   const { ref: expRef, inView: expInView } = useInView<HTMLDivElement>()
   const asideWrapRef = useRef<HTMLDivElement>(null)
   const cloudRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -46,7 +46,7 @@ export function Hero() {
     <section className="relative overflow-hidden max-w-6xl mx-auto px-3 sm:px-4 pt-8 sm:pt-10 pb-4 grid md:grid-cols-[1.15fr_.85fr] gap-8 items-start">
       {clouds.map((c, i) => (
         <span key={i} aria-hidden ref={el => { cloudRefs.current[i] = el }}
-          className={`pointer-events-none absolute select-none ${c.size} ${c.opacity} will-change-transform`}
+          className={`hero-cloud pointer-events-none absolute select-none ${c.size} ${c.opacity} will-change-transform`}
           style={{ top: c.top, left: c.left }}>☁️</span>
       ))}
       <div className="anim-fade-up">
@@ -73,6 +73,19 @@ export function Hero() {
           <a className="hover:text-terra" href={owner.instagram} target="_blank" rel="noreferrer">● Instagram</a>
           <span className="sr-only">{lang === 'id' ? 'Tautan sosial' : 'Social links'}</span>
         </p>
+        <div className="mt-6 flex flex-wrap gap-3" aria-label={t('hero.stats.label')}>
+          {[
+            { v: owner.expYears, k: 'hero.stats.years' },
+            { v: String(projects.length), k: 'hero.stats.projects' },
+            { v: String(certificates.length), k: 'hero.stats.certs' },
+            { v: '100', k: 'hero.stats.companies' },
+          ].map(s => (
+            <div key={s.k} className="bg-parchment/95 border-[3px] border-ink rounded-2xl px-4 py-3 shadow-[3px_3px_0_var(--color-ink)] text-center min-w-[104px] flex-1 sm:flex-none">
+              <p className="font-display text-2xl leading-none">{s.v}</p>
+              <p className="font-game text-[9px] mt-2 leading-relaxed">{t(s.k as never)}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div ref={asideWrapRef} className="will-change-transform">
@@ -81,13 +94,13 @@ export function Hero() {
           <p className="font-game text-[11px]">BIMA <span className="text-terra">HERO</span></p>
           <p className="font-game text-[10px] text-terra">HP {owner.hp}</p>
         </div>
-        <div className="mt-3 h-[170px] border-[3px] border-ink rounded-2xl bg-gradient-to-br from-[#6ec1ff] via-[#8b5cf6] to-[#e93ec8] flex flex-col items-center justify-center text-parchment">
+        <div className="mt-3 h-[170px] border-[3px] border-ink rounded-2xl bg-gradient-to-br from-[#6ec1ff] via-[#8b5cf6] to-[#e93ec8] flex flex-col items-center justify-center text-parchment hero-avatar">
           <span className="font-display text-7xl" style={{ filter: 'drop-shadow(0 3px 0 rgba(30,37,71,.6))' }}>B</span>
           <span className="font-game text-[9px] mt-3 opacity-90">[ FOTO / AVATAR HERO DI SINI ]</span>
         </div>
         <div className="mt-3 text-sm font-bold space-y-2">
           <p>{t('hero.class')}: {owner.role} · Lv. {owner.level}</p>
-          <div ref={expRef}>
+          <div ref={expRef} className="bar-hero">
             <p className="mb-1">{t('hero.exp')} {owner.expYears} {t('hero.years')}</p>
             <div className="bar-seg"><i style={{ width: expInView ? '82%' : '0%', background: 'linear-gradient(180deg,#ffe066,#ffb800)' }} /></div>
           </div>

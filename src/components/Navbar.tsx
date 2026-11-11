@@ -21,7 +21,7 @@ export function goSection(navigate: (p: string) => void, pathname: string, hash:
 }
 
 export function Navbar() {
-  const { t, lang, setLang, dark, toggleDark, muted, toggleMuted, bgmOn, toggleBgm } = useApp()
+  const { t, lang, setLang, dark, toggleDark, pro, togglePro, muted, toggleMuted, bgmOn, toggleBgm } = useApp()
   const { owner } = useContent()
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
@@ -65,6 +65,10 @@ export function Navbar() {
           <button onClick={toggleDark} aria-label="Toggle theme"
             className="w-[34px] h-[34px] border-[3px] border-ink rounded-[10px] bg-white text-base shadow-[2px_2px_0_var(--color-ink)]">
             {dark ? '☀️' : '🌙'}
+          </button>
+          <button onClick={togglePro} aria-pressed={pro} aria-label={pro ? t('nav.gameMode') : t('nav.pro')}
+            className={`font-game text-[10px] px-2 py-2 border-[3px] border-ink rounded-[10px] shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${pro ? 'bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink' : 'bg-gradient-to-b from-[#c084fc] to-[#8b5cf6] text-white'}`}>
+            {pro ? t('nav.gameMode') : t('nav.pro')}
           </button>
           <div className="flex border-[3px] border-ink rounded-[10px] shadow-[2px_2px_0_var(--color-ink)] overflow-hidden" role="group" aria-label="Language">
             {(['id', 'en'] as const).map(l => (

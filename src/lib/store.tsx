@@ -8,6 +8,10 @@ interface AppState {
   t: (k: MsgKey, vars?: Record<string, string>) => string
   dark: boolean
   toggleDark: () => void
+  /** Mode PRO: tampilan bersih (tanpa langit pixel, judul solid, tombol
+   *  datar) untuk klien korporat — kelas .pro di <html>, seperti dark. */
+  pro: boolean
+  togglePro: () => void
   muted: boolean
   toggleMuted: () => void
   bgmOn: boolean
@@ -30,9 +34,14 @@ function initialDark(): boolean {
   return false
 }
 
+function initialPro(): boolean {
+  return localStorage.getItem('mode') === 'pro'
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang)
   const [dark, setDark] = useState<boolean>(initialDark)
+  const [pro, setPro] = useState<boolean>(initialPro)
   const [muted, setMutedState] = useState<boolean>(isMuted())
   const [bgmOn, setBgmOn] = useState<boolean>(localStorage.getItem('bgm') !== '0')
 
@@ -42,12 +51,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [dark])
 
   useEffect(() => {
+    document.documentElement.classList.toggle('pro', pro)
+    localStorage.setItem('mode', pro ? 'pro' : 'game')
+  }, [pro])
+
+  useEffect(() => {
     document.documentElement.lang = lang
     localStorage.setItem('lang', lang)
   }, [lang])
 
   const setLang = useCallback((l: Lang) => { setLangState(l) }, [])
   const toggleDark = useCallback(() => { setDark(d => !d) }, [])
+  const togglePro = useCallback(() => { setPro(p => !p) }, [])
   const toggleMuted = useCallback(() => {
     setMutedState(m => {
       const next = !m
@@ -72,7 +87,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [lang])
 
   return (
-    <Ctx.Provider value={{ lang, setLang, t, dark, toggleDark, muted, toggleMuted, bgmOn, toggleBgm }}>
+    <Ctx.Provider value={{ lang, setLang, t, dark, toggleDark, pro, togglePro, muted, toggleMuted, bgmOn, toggleBgm }}>
       {children}
     </Ctx.Provider>
   )
