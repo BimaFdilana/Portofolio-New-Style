@@ -91,7 +91,7 @@ export function Dungeons() {
       {pages > 1 && (
         <div className="flex justify-center items-center gap-4 mt-8">
           <button className="btn-game btn-yellow" disabled={page === 1} onClick={() => setPage(p => Math.max(1, p - 1))}>◀</button>
-          <span className="font-game text-xs bg-parchment border-[3px] border-ink rounded-[10px] px-3 py-2 dark:text-ink">{page} / {pages}</span>
+          <span className="font-game text-xs bg-parchment dark:bg-night border-[3px] border-ink rounded-[10px] px-3 py-2">{page} / {pages}</span>
           <button className="btn-game btn-yellow" disabled={page === pages} onClick={() => setPage(p => Math.min(pages, p + 1))}>▶</button>
         </div>
       )}

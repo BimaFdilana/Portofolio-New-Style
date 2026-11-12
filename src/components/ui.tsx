@@ -1,4 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
+import { useApp } from '../lib/store'
+import type { ThemeId } from '../lib/themes'
+
+/* Ikon judul section per tema — tiap tema punya alfabet ikonnya sendiri
+ *  (terminal: prompt ASCII, neon: glif HUD, space: ikon misi, solarized:
+ *  tanda kode). Game/dark/retro memakai emoji asli. */
+const THEME_ICONS: Record<ThemeId, Record<string, string>> = {
+  game: {},
+  terminal: { '🎒': '$', '🏰': '>', '🏆': '#', '📜': '~', '⚔️': '&' },
+  retro: {},
+  neon: { '🎒': '⬡', '🏰': '⬢', '🏆': '⬣', '📜': '≣', '⚔️': '✦' },
+  space: { '🎒': '🛰️', '🏰': '🌌', '🏆': '🪐', '📜': '📡', '⚔️': '🚀' },
+  solarized: { '🎒': '{}', '🏰': '[]', '🏆': '()', '📜': '//', '⚔️': '->' },
+}
 
 /* Satu warna aksen per section: lencana judul + garis bawah memakai
  *  gradasi aksen section itu saja, supaya mata tidak diserang semua warna
@@ -13,9 +27,11 @@ const ACCENTS = {
 export type Accent = keyof typeof ACCENTS
 
 export function SectionTitle({ icon, a, b, accent = 'gold' }: { icon: string; a: string; b: string; accent?: Accent }) {
+  const { theme } = useApp()
+  const shown = THEME_ICONS[theme]?.[icon] ?? icon
   return (
     <div className="text-center mb-10">
-      <span className={`section-badge inline-block bg-gradient-to-b ${ACCENTS[accent]} text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none`}>{icon}</span>
+      <span className={`section-badge inline-block bg-gradient-to-b ${ACCENTS[accent]} text-ink border-[3px] border-ink rounded-2xl shadow-[4px_4px_0_var(--color-ink)] px-3 py-2 text-xl leading-none`}>{shown}</span>
       <h2 className="font-display text-3xl sm:text-5xl mt-5 leading-tight">
         <span className="title-chunky">{a}</span>{' '}
         <span className="title-chunky-blue">{b}</span>

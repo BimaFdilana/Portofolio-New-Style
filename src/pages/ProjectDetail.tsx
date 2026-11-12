@@ -118,7 +118,7 @@ export function ProjectDetail() {
   return (
     <>
       <main className="max-w-5xl mx-auto px-3 sm:px-4 py-10">
-        <Link to="/" className="font-game text-[11px] bg-parchment border-[3px] border-ink rounded-[10px] px-3 py-2 inline-block shadow-[3px_3px_0_var(--color-ink)] dark:text-ink">
+        <Link to="/" className="font-game text-[11px] bg-parchment dark:bg-night border-[3px] border-ink rounded-[10px] px-3 py-2 inline-block shadow-[3px_3px_0_var(--color-ink)]">
           {t('detail.back')}
         </Link>
         <div className="h-[240px] sm:h-[300px] border-[3px] border-ink rounded-2xl mt-5 relative shadow-[6px_6px_0_var(--color-ink)]" style={{ background: p.grad }}>

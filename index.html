@@ -1,9 +1,31 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" data-theme="game">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+  /* Tema: pilihan eksplisit (localStorage 'theme') selalu menang; kalau
+   * belum ada, pakai hasil acak sesi ini (sessionStorage); kalau belum
+   * ada juga, undi dari pool 6 tema dan simpan di sessionStorage saja —
+   * bukan localStorage, karena undian bukan pilihan. Jalan sebelum paint
+   * supaya tidak kedip. Migrasi: 'light' lama → game, 'dark' lama → terminal. */
+  (function(){try{
+    var POOL=['game','terminal','retro','neon','space','solarized'];
+    var COLORS={game:'#232a4d',terminal:'#0a0f0a',retro:'#1a1836',neon:'#050508',space:'#030712',solarized:'#002b36'};
+    var t=null;try{t=localStorage.getItem('theme')}catch(e){}
+    if(t==='light')t='game';
+    if(t==='dark')t='terminal';
+    if(t&&POOL.indexOf(t)<0)t=null;
+    if(!t){try{t=sessionStorage.getItem('theme-session')}catch(e){}}
+    if(!t||POOL.indexOf(t)<0){t=POOL[Math.floor(Math.random()*POOL.length)];try{sessionStorage.setItem('theme-session',t)}catch(e){}}
+    var r=document.documentElement;
+    r.setAttribute('data-theme',t);
+    if(t!=='game')r.classList.add('dark');
+    try{if(localStorage.getItem('mode')==='pro')r.classList.add('pro')}catch(e){}
+    var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',COLORS[t]||'#232a4d');
+  }catch(e){}})();
+  </script>
   <title>Bima Fadi Lana — Full Stack Developer | Portofolio</title>
   <meta name="description" content="Portofolio Bima Fadi Lana, Full Stack Developer Indonesia. Membangun aplikasi web modern yang ringan, cepat, dan andal dengan Laravel, React, dan TypeScript." />
   <meta name="keywords" content="Bima Fadi Lana, Full Stack Developer, Portofolio, Laravel, React, TypeScript, Web Developer Indonesia" />
@@ -32,7 +54,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="/assets/bg-sky.webp" />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800;900&family=Titan+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=JetBrains+Mono:wght@400;700&family=Nunito:wght@400;700;800;900&family=Titan+One&family=VT323&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div id="root"></div>

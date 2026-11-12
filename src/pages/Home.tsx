@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../lib/store'
 import type { MsgKey } from '../lib/i18n'
 import { Hero } from '../components/Hero'
+import { TerminalConsole } from '../components/TerminalConsole'
 import { AdventureLog, Dungeons, FinalQuest, Footer, Inventory, Relics } from '../components/Sections'
 
 /** Toast "TERBUKA" saat sebuah section pertama kali tercapai dengan scroll
@@ -25,7 +26,7 @@ const UNLOCKS: { id: string; key: MsgKey }[] = [
 const TOAST_MS = 2600
 
 export function Home() {
-  const { t } = useApp()
+  const { t, theme } = useApp()
   const [toast, setToast] = useState<string | null>(null)
   const seenRef = useRef(new Set<string>())
   const queueRef = useRef<MsgKey[]>([])
@@ -74,6 +75,7 @@ export function Home() {
   return (
     <>
       <Hero />
+      {theme === 'terminal' && <TerminalConsole />}
       <Inventory />
       <Dungeons />
       <Relics />

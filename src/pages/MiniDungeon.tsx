@@ -212,7 +212,7 @@ export function MiniDungeon() {
     <>
       <main className="max-w-4xl mx-auto px-3 sm:px-4 py-8">
         <div className="flex items-center gap-3 flex-wrap">
-          <Link to="/" className="font-game text-[11px] bg-parchment border-[3px] border-ink rounded-[10px] px-3 py-2 shadow-[3px_3px_0_var(--color-ink)] dark:text-ink">← HOME</Link>
+          <Link to="/" className="font-game text-[11px] bg-parchment dark:bg-night border-[3px] border-ink rounded-[10px] px-3 py-2 shadow-[3px_3px_0_var(--color-ink)]">← HOME</Link>
           <h1 className="font-display text-2xl sm:text-4xl title-chunky">
             ⚔ {t('game.title')}
           </h1>

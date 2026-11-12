@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../lib/store'
+import { THEMES } from '../lib/themes'
 import { sfx } from '../lib/audio'
 import { useContent } from '../lib/content'
 import { scrollToEl } from '../lib/smoothScroll'
@@ -21,9 +22,10 @@ export function goSection(navigate: (p: string) => void, pathname: string, hash:
 }
 
 export function Navbar() {
-  const { t, lang, setLang, dark, toggleDark, pro, togglePro, muted, toggleMuted, bgmOn, toggleBgm } = useApp()
+  const { t, lang, setLang, theme, themeSource, setTheme, cycleTheme, shuffleTheme, setRandomMode, pro, togglePro, muted, toggleMuted, bgmOn, toggleBgm } = useApp()
   const { owner } = useContent()
   const [open, setOpen] = useState(false)
+  const [themeOpen, setThemeOpen] = useState(false)
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [active, setActive] = useState('')
@@ -40,6 +42,8 @@ export function Navbar() {
   }, [pathname])
 
   const nav = (hash: string) => { setOpen(false); setActive(hash); goSection(navigate, pathname, hash) }
+  const current = THEMES.find(x => x.id === theme) ?? THEMES[0]
+  const pick = (id: typeof theme) => { setTheme(id); setThemeOpen(false) }
 
   return (
     <header className="sticky top-0 z-50 bg-parchment/85 dark:bg-nightdeep/85 backdrop-blur-md border-b-[3px] border-ink dark:border-black shadow-[0_2px_16px_rgba(30,37,71,.15)]">
@@ -59,13 +63,47 @@ export function Navbar() {
 
         <div className="ml-auto flex items-center gap-2">
           <button onClick={toggleBgm} aria-pressed={bgmOn}
-            className="font-game text-[10px] px-2 py-2 border-[3px] border-ink rounded-[10px] bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+            className="hidden sm:inline-block font-game text-[10px] px-2 py-2 border-[3px] border-ink rounded-[10px] bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
             ♪ {bgmOn ? 'ON' : 'OFF'}
           </button>
-          <button onClick={toggleDark} aria-label="Toggle theme"
-            className="w-[34px] h-[34px] border-[3px] border-ink rounded-[10px] bg-white text-base shadow-[2px_2px_0_var(--color-ink)]">
-            {dark ? '☀️' : '🌙'}
-          </button>
+          {/* Pemilih tema: tombol siklus (ikon + nama tema aktif) + acak + daftar pilih. */}
+          <div className="relative flex items-center gap-2">
+            <button data-testid="theme-cycle" onClick={cycleTheme} aria-label={t('theme.cycle')} title={t('theme.cycle')}
+              className="flex items-center gap-1.5 h-[34px] px-2 border-[3px] border-ink rounded-[10px] bg-white text-ink shadow-[2px_2px_0_var(--color-ink)] font-game text-[10px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+              <span aria-hidden>{current.icon}</span>
+              <span className="hidden sm:inline">{themeSource !== 'saved' ? '🎲 ' : ''}{t(current.nameKey as never)}</span>
+            </button>
+            <button data-testid="theme-shuffle" onClick={shuffleTheme} aria-label={t('theme.shuffle')} title={t('theme.shuffle')}
+              className="w-[34px] h-[34px] border-[3px] border-ink rounded-[10px] bg-white text-base shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+              🎲
+            </button>
+            <button data-testid="theme-picker" onClick={() => setThemeOpen(o => !o)} aria-expanded={themeOpen} aria-label={t('theme.pick')} title={t('theme.pick')}
+              className="hidden sm:flex w-[34px] h-[34px] items-center justify-center border-[3px] border-ink rounded-[10px] bg-white text-ink shadow-[2px_2px_0_var(--color-ink)] font-game text-[10px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+              ▾
+            </button>
+            {themeOpen && (
+              <>
+                <div className="fixed inset-0 z-[70]" onClick={() => setThemeOpen(false)} aria-hidden />
+                <div className="absolute right-0 top-[calc(100%+10px)] z-[80] w-60 bg-parchment dark:bg-night border-[3px] border-ink rounded-2xl shadow-[5px_5px_0_var(--color-ink)] p-2" role="menu" aria-label={t('theme.pick')}>
+                  {THEMES.map(th => (
+                    <button key={th.id} data-testid={`theme-option-${th.id}`} role="menuitemradio" aria-checked={theme === th.id}
+                      onClick={() => pick(th.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2 font-game text-[11px] rounded-xl text-left ${theme === th.id ? 'bg-ochre text-ink' : 'text-ink dark:text-parchment hover:bg-ink/5'}`}>
+                      <span>{th.icon} {t(th.nameKey as never)}</span>
+                      {theme === th.id && <span aria-hidden>✓</span>}
+                    </button>
+                  ))}
+                  <div className="border-t-2 border-ink/20 my-1" />
+                  <button data-testid="theme-random-mode" role="menuitemradio" aria-checked={themeSource !== 'saved'}
+                    onClick={() => { setRandomMode(); setThemeOpen(false) }}
+                    className={`w-full flex items-center justify-between px-3 py-2 font-game text-[11px] rounded-xl text-left ${themeSource !== 'saved' ? 'bg-ochre text-ink' : 'text-ink dark:text-parchment hover:bg-ink/5'}`}>
+                    <span>{t('theme.randomMode')}</span>
+                    {themeSource !== 'saved' && <span aria-hidden>✓</span>}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
           <button onClick={togglePro} aria-pressed={pro} aria-label={pro ? t('nav.gameMode') : t('nav.pro')}
             className={`font-game text-[10px] px-2 py-2 border-[3px] border-ink rounded-[10px] shadow-[2px_2px_0_var(--color-ink)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none ${pro ? 'bg-gradient-to-b from-[#ffe066] to-[#ffb800] text-ink' : 'bg-gradient-to-b from-[#c084fc] to-[#8b5cf6] text-white'}`}>
             {pro ? t('nav.gameMode') : t('nav.pro')}
@@ -92,6 +130,20 @@ export function Navbar() {
               onClick={() => nav(l.hash)}>{active === l.hash ? '▶ ' : ''}{t(l.key as never)}</button>
           ))}
           <Link to="/game" className="font-game text-[13px] text-terra" onClick={() => setOpen(false)}>⚔ {t('nav.game')}</Link>
+          <p className="font-game text-[11px] mt-1">{t('theme.pick')}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {THEMES.map(th => (
+              <button key={th.id} onClick={() => { setTheme(th.id); setOpen(false) }} aria-pressed={theme === th.id}
+                className={`font-game text-[11px] px-2 py-2 border-[3px] border-ink rounded-[10px] text-left ${theme === th.id ? 'bg-ochre text-ink' : 'bg-white text-ink'}`}>
+                {th.icon} {t(th.nameKey as never)}
+              </button>
+            ))}
+            <button className="font-game text-[11px] px-2 py-2 border-[3px] border-ink rounded-[10px] bg-white text-ink text-left"
+              onClick={() => { shuffleTheme(); setOpen(false) }}>🎲 {t('theme.shuffle')}</button>
+            <button className="font-game text-[11px] px-2 py-2 border-[3px] border-ink rounded-[10px] bg-white text-ink text-left"
+              onClick={() => { setRandomMode(); setOpen(false) }}>{t('theme.randomMode')}</button>
+          </div>
+          <button className="font-game text-[13px] text-left" onClick={toggleBgm}>♪ BGM: {bgmOn ? 'ON' : 'OFF'}</button>
           <button className="font-game text-[13px] text-left" onClick={toggleMuted}>{muted ? '🔇 UNMUTE SFX' : '🔊 MUTE SFX'}</button>
         </nav>
       )}

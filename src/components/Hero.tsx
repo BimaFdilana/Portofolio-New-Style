@@ -67,7 +67,7 @@ export function Hero() {
           <a href="#contact" className="btn-game btn-night">{t('hero.battleMe')}</a>
           <a href={owner.cvUrl} className="btn-game btn-blue" download>{t('hero.cv')}</a>
         </div>
-        <p className="inline-flex mt-6 bg-parchment/95 border-[3px] border-ink rounded-full px-4 py-2 shadow-[3px_3px_0_var(--color-ink)] font-extrabold text-sm gap-4 flex-wrap">
+        <p className="inline-flex mt-6 bg-parchment/95 dark:bg-night/95 border-[3px] border-ink rounded-full px-4 py-2 shadow-[3px_3px_0_var(--color-ink)] font-extrabold text-sm gap-4 flex-wrap">
           <a className="hover:text-terra" href={owner.github} target="_blank" rel="noreferrer">● GitHub</a>
           <a className="hover:text-terra" href={owner.linkedin} target="_blank" rel="noreferrer">● LinkedIn</a>
           <a className="hover:text-terra" href={owner.instagram} target="_blank" rel="noreferrer">● Instagram</a>
@@ -80,7 +80,7 @@ export function Hero() {
             { v: String(certificates.length), k: 'hero.stats.certs' },
             { v: '100', k: 'hero.stats.companies' },
           ].map(s => (
-            <div key={s.k} className="bg-parchment/95 border-[3px] border-ink rounded-2xl px-4 py-3 shadow-[3px_3px_0_var(--color-ink)] text-center min-w-[104px] flex-1 sm:flex-none">
+            <div key={s.k} className="bg-parchment/95 dark:bg-night/95 border-[3px] border-ink rounded-2xl px-4 py-3 shadow-[3px_3px_0_var(--color-ink)] text-center min-w-[104px] flex-1 sm:flex-none">
               <p className="font-display text-2xl leading-none">{s.v}</p>
               <p className="font-game text-[9px] mt-2 leading-relaxed">{t(s.k as never)}</p>
             </div>

@@ -1,10 +1,11 @@
-import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { AppProvider, useApp } from './lib/store'
 import { ContentProvider } from './lib/content'
-import { sfx, startBgm } from './lib/audio'
+import { sfx, startBgm, themeClick } from './lib/audio'
 import { LoadingScreen, StartScreen } from './components/Boot'
 import { FloatingButtons, Navbar } from './components/Navbar'
+import { ThemeChrome } from './components/ThemeChrome'
 import { CustomCursor } from './components/Cursor'
 import { MascotGuide } from './components/MascotGuide'
 import { initSmoothScroll, scrollToEl } from './lib/smoothScroll'
@@ -19,21 +20,24 @@ const AdminApp = lazy(() => import('./admin/AdminApp'))
 type BootPhase = 'start' | 'loading' | 'site'
 
 function Site() {
-  const { t, bgmOn } = useApp()
+  const { t, bgmOn, theme } = useApp()
   const [phase, setPhase] = useState<BootPhase>(() => (sessionStorage.getItem('booted') === '1' ? 'site' : 'start'))
   const [toast, setToast] = useState(false)
   const { pathname } = useLocation()
+  const themeRef = useRef(theme)
+  themeRef.current = theme
 
   useEffect(() => { scrollToEl(0, true) }, [pathname])
 
   // Smooth scroll (Lenis) + kursor custom: nyala sekali seumur halaman.
   useEffect(() => { initSmoothScroll() }, [])
 
-  // SFX klik global: setiap klik menu/tombol berbunyi (syarat pemilik).
+  // SFX klik global: setiap klik menu/tombol berbunyi khas tema aktif
+  // (syarat pemilik) — lewat themeClick, tetap patuh mute global.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const el = e.target as HTMLElement
-      if (el.closest('a,button,input,textarea,select,[role="button"]')) sfx.click()
+      if (el.closest('a,button,input,textarea,select,[role="button"]')) themeClick(themeRef.current)
     }
     document.addEventListener('click', onClick)
     return () => document.removeEventListener('click', onClick)
@@ -60,8 +64,8 @@ function Site() {
   const loaded = useCallback(() => {
     sessionStorage.setItem('booted', '1')
     setPhase('site')
-    if (bgmOn) startBgm()
-  }, [bgmOn])
+    if (bgmOn) startBgm(theme)
+  }, [bgmOn, theme])
 
   if (phase === 'start') return <StartScreen onStart={start} />
   if (phase === 'loading') return <LoadingScreen done={loaded} />
@@ -69,6 +73,7 @@ function Site() {
   return (
     <div className="min-h-screen bg-world bg-cream dark:bg-nightdeep">
       <Navbar />
+      <ThemeChrome />
       <Suspense fallback={<div className="p-16 text-center font-game text-xs">LOADING…</div>}>
         <Routes>
           <Route path="/" element={<Home />} />
